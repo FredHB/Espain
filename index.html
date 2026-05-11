@@ -122,6 +122,31 @@
     .day-btn.active { background: #2563eb; border-color: #2563eb; color: white; }
     .day-btn.all-btn { border-color: #2563eb; color: #2563eb; background: white; }
     .day-btn.all-btn.active { background: #2563eb; color: white; }
+
+    /* ── Mobile responsiveness ── */
+    .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
+    @media (max-width: 640px) {
+      header { padding: 16px; }
+      header h1 { font-size: 20px; }
+      header p { font-size: 13px; }
+      main { padding: 12px; }
+      section { padding: 14px; border-radius: 10px; margin-bottom: 14px; }
+      h2 { font-size: 18px; }
+      h3 { font-size: 15px; }
+      .map { height: 300px; }
+      #overview-map { height: 340px; }
+      .meta { grid-template-columns: 1fr 1fr; gap: 6px; }
+      .pill { font-size: 12px; padding: 6px 8px; }
+      table { font-size: 12px; }
+      th, td { padding: 7px 8px; }
+      table td:first-child, table th:first-child { min-width: 80px; }
+      a.button, .wts-btn, .wtd-btn { font-size: 12px; padding: 7px 10px; margin: 6px 6px 0 0; }
+      .wtd-box { padding: 18px; border-radius: 12px; }
+      .photo-box { padding: 18px; border-radius: 12px; }
+      .photo-grid { grid-template-columns: 1fr; }
+      #day-picker-bar { padding: 8px 12px; }
+    }
   </style>
 </head>
 <body>
@@ -161,7 +186,7 @@
 
   <section>
     <h2>Summary</h2>
-    <table>
+    <div class="table-scroll"><table>
       <thead><tr><th>Date</th><th>Route / focus</th><th>Expected RV driving</th><th>Sleep area</th></tr></thead>
       <tbody>
       <tr>
@@ -275,7 +300,7 @@
         <td>3.5–5h depending overnight point</td>
         <td>Home / Zürich</td>
       </tr></tbody>
-    </table>
+    </table></div><!-- /.table-scroll -->
   </section>
 
   <div id="day-sections"></div>
