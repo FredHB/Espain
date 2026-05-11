@@ -31,8 +31,7 @@ jobs:
       - name: Prepare site artifact
         run: |
           mkdir -p _site
-          cp espain.html _site/
-          cp espain.html _site/index.html
+          cp index.html _site/
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
