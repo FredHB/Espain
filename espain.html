@@ -1,0 +1,1021 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>North Spain RV Overview Map — Osnabrück to Zürich</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin: 0; color: #202124; background: #f8f9fa; }
+    header { padding: 24px 28px; background: #111827; color: white; }
+    header h1 { margin: 0 0 6px; font-size: 26px; }
+    header p { margin: 3px 0; opacity: .92; }
+    main { max-width: 1180px; margin: 0 auto; padding: 22px; }
+    section { background: white; border: 1px solid #e5e7eb; border-radius: 14px; padding: 18px; margin-bottom: 22px; box-shadow: 0 1px 3px rgba(0,0,0,.05); }
+    h2 { margin: 0 0 10px; font-size: 22px; }
+    h3 { margin: 0 0 8px; font-size: 18px; }
+    .map { height: 460px; border-radius: 12px; border: 1px solid #d1d5db; margin-top: 12px; }
+    #overview-map { height: 640px; }
+    .meta { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 8px; margin: 8px 0 10px; }
+    .pill { background: #fafaf9; border: 1.5px solid #374151; padding: 8px 10px; border-radius: 10px; font-size: 14px; }
+    .legend { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; font-size: 14px; }
+    .legend span { display: inline-flex; align-items: center; gap: 6px; }
+    .dot { width: 13px; height: 13px; border-radius: 50%; display: inline-block; }
+    .number-marker { width: 28px; height: 28px; border-radius: 50%; color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; border: 2px solid white; box-shadow: 0 1px 5px rgba(0,0,0,.35); }
+    .start { background: #2563eb; }
+    .finish { background: #111827; }
+    .overnight { background: #7c3aed; }
+    .visit { background: #059669; }
+    .food { background: #d97706; }
+    .work { background: #be123c; }
+    .optional { background: #6b7280; }
+    .popup-title { font-weight: 700; margin-bottom: 4px; }
+    .small { font-size: 13px; color: #4b5563; }
+    table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    th, td { text-align: left; padding: 9px 10px; border-bottom: 1px solid #e5e7eb; vertical-align: top; }
+    th { background: #f3f4f6; }
+    table td:first-child, table th:first-child { white-space: nowrap; min-width: 110px; }
+    a.button { display: inline-block; margin: 8px 8px 0 0; padding: 8px 12px; border-radius: 9px; background: #2563eb; color: white; text-decoration: none; font-weight: 600; font-size: 14px; }
+    a.secondary { background: #374151; }
+    a.p4n-btn { background: #16a34a; }
+    .wtd-btn { display: inline-block; margin: 8px 8px 0 0; padding: 8px 12px; border-radius: 9px; background: #d97706; color: white; border: none; font-weight: 600; font-size: 14px; cursor: pointer; }
+    .wtd-btn:hover { background: #b45309; }
+
+    /* What to do modal */
+    .wtd-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.72); z-index: 9999; align-items: center; justify-content: center; padding: 20px; }
+    .wtd-overlay.open { display: flex; }
+    .wtd-box { background: white; border-radius: 18px; max-width: 680px; width: 100%; max-height: 88vh; overflow-y: auto; padding: 28px; position: relative; box-shadow: 0 8px 40px rgba(0,0,0,.4); }
+    .wtd-box h3 { margin: 0 0 4px; font-size: 20px; }
+    .wtd-box h4 { margin: 18px 0 6px; font-size: 15px; color: #374151; text-transform: uppercase; letter-spacing: .04em; }
+    .wtd-close { position: absolute; top: 16px; right: 18px; background: #f3f4f6; border: none; border-radius: 50%; width: 34px; height: 34px; font-size: 20px; cursor: pointer; line-height: 34px; text-align: center; }
+    .wtd-close:hover { background: #e5e7eb; }
+    .wtd-notes { list-style: none; padding: 0; margin: 0; }
+    .wtd-notes li { padding: 7px 0; border-bottom: 1px solid #f3f4f6; font-size: 14px; line-height: 1.5; }
+    .wtd-notes li:last-child { border-bottom: none; }
+    .wtd-notes li::before { content: "→ "; color: #d97706; font-weight: 700; }
+    .wtd-links { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; }
+    .wtd-links a { padding: 7px 12px; border-radius: 8px; background: #f3f4f6; color: #1d4ed8; font-size: 13px; font-weight: 600; text-decoration: none; border: 1px solid #e5e7eb; }
+    .wtd-links a:hover { background: #e5e7eb; }
+    .note { background: #fff7ed; border: 1px solid #fed7aa; border-radius: 10px; padding: 10px 12px; margin-top: 8px; font-size: 14px; }
+    .day-section h2 { margin-bottom: 2px; }
+    .download-list a { margin-right: 10px; }
+
+    /* What to see modal */
+    .wts-btn { display: inline-block; margin: 8px 8px 0 0; padding: 8px 12px; border-radius: 9px; background: #059669; color: white; border: none; font-weight: 600; font-size: 14px; cursor: pointer; }
+    .wts-btn:hover { background: #047857; }
+    .photo-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.72); z-index: 9999; align-items: center; justify-content: center; padding: 20px; }
+    .photo-overlay.open { display: flex; }
+    .photo-box { background: white; border-radius: 18px; max-width: 860px; width: 100%; max-height: 90vh; overflow-y: auto; padding: 28px; position: relative; box-shadow: 0 8px 40px rgba(0,0,0,.4); }
+    .photo-box h3 { margin: 0 0 18px; font-size: 20px; }
+    .photo-close { position: absolute; top: 16px; right: 18px; background: #f3f4f6; border: none; border-radius: 50%; width: 34px; height: 34px; font-size: 20px; cursor: pointer; line-height: 34px; text-align: center; }
+    .photo-close:hover { background: #e5e7eb; }
+    .photo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px; }
+    .photo-card { border-radius: 12px; overflow: hidden; border: 1px solid #e5e7eb; }
+    .photo-card img { width: 100%; height: 200px; object-fit: cover; display: block; }
+    .photo-card-caption { padding: 10px 12px; font-size: 13px; font-weight: 600; color: #374151; }
+    .photo-card-sub { font-size: 12px; color: #6b7280; font-weight: 400; margin-top: 2px; }
+    .photo-loading { text-align: center; padding: 40px; color: #6b7280; font-size: 15px; }
+    .photo-error { background: #fff7ed; border: 1px solid #fed7aa; border-radius: 10px; padding: 12px; font-size: 14px; color: #92400e; }
+
+    /* Day picker */
+    #day-picker-bar {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: #fff;
+      border-bottom: 1px solid #e5e7eb;
+      box-shadow: 0 2px 8px rgba(0,0,0,.07);
+      padding: 10px 22px;
+    }
+    #day-picker-bar .picker-inner {
+      max-width: 1180px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    #day-picker-bar .picker-inner::-webkit-scrollbar { display: none; }
+    #day-picker-bar .picker-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: #6b7280;
+      white-space: nowrap;
+      margin-right: 4px;
+    }
+    .day-btn {
+      flex-shrink: 0;
+      padding: 6px 13px;
+      border-radius: 20px;
+      border: 1.5px solid #e5e7eb;
+      background: #f9fafb;
+      color: #374151;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background .15s, border-color .15s, color .15s;
+    }
+    .day-btn:hover { background: #f3f4f6; border-color: #d1d5db; }
+    .day-btn.active { background: #2563eb; border-color: #2563eb; color: white; }
+    .day-btn.all-btn { border-color: #2563eb; color: #2563eb; background: white; }
+    .day-btn.all-btn.active { background: #2563eb; color: white; }
+  </style>
+</head>
+<body>
+<header>
+  <h1>Taking the good 'ol Hymer to Espain!</h1>
+  <p>Osnabrück → North Spain → Zürich · 22 May to 6 June</p>
+  <p>Tailored to Filipa and Fred 🚐🗺️🌊🥾🌄</p>
+</header>
+
+<div id="day-picker-bar">
+  <div class="picker-inner">
+    <span class="picker-label">Jump to day:</span>
+    <button class="day-btn all-btn active" onclick="filterDay(null, this)">All days</button>
+  </div>
+</div>
+
+<main>
+  <section>
+    <h2>How to use these maps</h2>
+    <p>The map lines are planning lines between stops, not exact road geometry. Use the blue Google Maps buttons under each day for real driving directions. These links use the core stops only; optional markers are shown on the maps and can be added manually if you choose them.</p>
+    <div class="legend">
+      <span><i class="dot start"></i>Start</span>
+      <span><i class="dot overnight"></i>Overnight</span>
+      <span><i class="dot visit"></i>Visit</span>
+      <span><i class="dot food"></i>Food-focused stop</span>
+      <span><i class="dot work"></i>Work / important logistics</span>
+      <span><i class="dot optional"></i>Optional / fallback</span>
+      <span><i class="dot finish"></i>Finish</span>
+    </div>
+  </section>
+
+  <section>
+    <h2>Whole route overview</h2>
+    <p>Overnight/logistics stops and return route. This keeps you back in Zürich on Saturday 6 June.</p>
+    <div id="overview-map" class="map"></div>
+  </section>
+
+  <section>
+    <h2>Summary</h2>
+    <table>
+      <thead><tr><th>Date</th><th>Route / focus</th><th>Expected RV driving</th><th>Sleep area</th></tr></thead>
+      <tbody>
+      <tr>
+        <td>Day 1<br>Fri 22 May</td>
+        <td>Osnabrück → Troyes / Reims area</td>
+        <td>6–7.5h RV driving after 14:00</td>
+        <td>Troyes area, with Reims as earlier fallback</td>
+      </tr>
+
+      <tr>
+        <td>Day 2<br>Sat 23 May</td>
+        <td>Troyes / Reims → Landes / Bayonne area</td>
+        <td>7.5–9h RV driving depending Friday progress</td>
+        <td>Bayonne, Capbreton, Biarritz or Landes coast area</td>
+      </tr>
+
+      <tr>
+        <td>Day 3<br>Sun 24 May</td>
+        <td>Bayonne → Saint-Jean-de-Luz → Hondarribia → San Sebastián</td>
+        <td>2–3h total, broken into short hops</td>
+        <td>San Sebastián campsite / camper area</td>
+      </tr>
+
+      <tr>
+        <td>Day 4<br>Mon 25 May</td>
+        <td>Full San Sebastián / Donostia day</td>
+        <td>0–30m, ideally park once and use walking/bikes/bus</td>
+        <td>Same San Sebastián campsite / camper area</td>
+      </tr>
+
+      <tr>
+        <td>Day 5<br>Tue 26 May</td>
+        <td>San Sebastián → Zarautz → Getaria → Zumaia → Lekeitio/Gaztelugatxe → Bilbao</td>
+        <td>3–4h total if you choose Lekeitio; similar if choosing Gaztelugatxe</td>
+        <td>Bilbao / Kobetamendi area</td>
+      </tr>
+
+      <tr>
+        <td>Day 6<br>Wed 27 May</td>
+        <td>Bilbao visit → Santander work base</td>
+        <td>1.5–2h Bilbao to Santander</td>
+        <td>Santander / Camping Cabo Mayor recommended</td>
+      </tr>
+
+      <tr>
+        <td>Day 7<br>Thu 28 May</td>
+        <td>Work morning in Santander → Santander visit → Santillana/Comillas area</td>
+        <td>45m–1h after work</td>
+        <td>Santillana / Comillas / Cóbreces area</td>
+      </tr>
+
+      <tr>
+        <td>Day 8<br>Fri 29 May</td>
+        <td>Santillana → Altamira → Comillas → El Soplao → Potes</td>
+        <td>2.5–3h total</td>
+        <td>Potes / Camping La Viorna recommended</td>
+      </tr>
+
+      <tr>
+        <td>Day 9<br>Sat 30 May</td>
+        <td>Potes → Fuente Dé → Llanes / Ribadesella</td>
+        <td>2.5–3h total</td>
+        <td>Llanes or Ribadesella area</td>
+      </tr>
+
+      <tr>
+        <td>Day 10<br>Sun 31 May</td>
+        <td>Llanes / Ribadesella → Arriondas kayak → Cangas de Onís</td>
+        <td>1–1.5h total</td>
+        <td>Cangas de Onís</td>
+      </tr>
+
+      <tr>
+        <td>Day 11<br>Mon 1 Jun</td>
+        <td>Covadonga Lakes + Cangas de Onís</td>
+        <td>Minimal if using official shuttle/parking</td>
+        <td>Cangas de Onís or Arenas de Cabrales area</td>
+      </tr>
+
+      <tr>
+        <td>Day 12<br>Tue 2 Jun</td>
+        <td>Ruta del Cares partial hike</td>
+        <td>2–2.5h total from Cangas, less if sleeping near Arenas</td>
+        <td>Cangas / Arenas de Cabrales area</td>
+      </tr>
+
+      <tr>
+        <td>Day 13<br>Wed 3 Jun</td>
+        <td>Cangas / Arenas → Cudillero → Oviedo</td>
+        <td>2.5–3h total</td>
+        <td>Oviedo</td>
+      </tr>
+
+      <tr>
+        <td>Day 14<br>Thu 4 Jun</td>
+        <td>Oviedo → Bordeaux / Landes</td>
+        <td>6.5–8h</td>
+        <td>Bordeaux / Landes area</td>
+      </tr>
+
+      <tr>
+        <td>Day 15<br>Fri 5 Jun</td>
+        <td>Bordeaux / Landes → Burgundy / Jura / eastern France</td>
+        <td>7–8.5h</td>
+        <td>Beaune, Dijon, Besançon, Jura or Mulhouse area</td>
+      </tr>
+
+      <tr>
+        <td>Day 16<br>Sat 6 Jun</td>
+        <td>Eastern France → Zürich</td>
+        <td>3.5–5h depending overnight point</td>
+        <td>Home / Zürich</td>
+      </tr></tbody>
+    </table>
+  </section>
+
+  <div id="day-sections"></div>
+</main>
+
+<script>
+const routeStops = [{"date": "Fri 22 May", "name": "Osnabrück", "lat": 52.2799, "lng": 8.0472, "role": "start", "note": "Depart after 14:00."}, {"date": "Fri 22 May", "name": "Troyes area / Reims fallback", "lat": 48.2973, "lng": 4.0744, "role": "overnight", "note": "First transit overnight. Reims is a shorter fallback if tired."}, {"date": "Sat 23 May", "name": "Bayonne / Landes coast area", "lat": 43.4929, "lng": -1.4748, "role": "overnight", "note": "Second transit overnight, close to Spanish border."}, {"date": "Sun 24 May", "name": "San Sebastián area", "lat": 43.3183, "lng": -1.9812, "role": "overnight", "note": "Sleep near San Sebastián after Bayonne, Saint-Jean-de-Luz, Hondarribia."}, {"date": "Mon 25 May", "name": "San Sebastián area", "lat": 43.3183, "lng": -1.9812, "role": "overnight", "note": "Full Donostia day; pintxos night."}, {"date": "Tue 26 May", "name": "Bilbao / Kobetamendi", "lat": 43.2564, "lng": -2.9634, "role": "overnight", "note": "After Zarautz, Getaria, Zumaia and Lekeitio/Gaztelugatxe option."}, {"date": "Wed 27 May", "name": "Santander / Camping Cabo Mayor", "lat": 43.4775, "lng": -3.7925, "role": "work", "note": "Important overnight for reliable work setup on Thu 28 May morning."}, {"date": "Thu 28 May", "name": "Santillana / Comillas area", "lat": 43.3897, "lng": -4.1085, "role": "overnight", "note": "After work morning and Santander afternoon."}, {"date": "Fri 29 May", "name": "Potes / Camping La Viorna", "lat": 43.1518, "lng": -4.6369, "role": "overnight", "note": "After Santillana, Altamira, Comillas and El Soplao."}, {"date": "Sat 30 May", "name": "Llanes / Ribadesella area", "lat": 43.4212, "lng": -4.7546, "role": "overnight", "note": "After Potes and Fuente Dé."}, {"date": "Sun 31 May", "name": "Cangas de Onís", "lat": 43.35, "lng": -5.1294, "role": "overnight", "note": "After Sella kayaking / Ribadesella."}, {"date": "Mon 1 Jun", "name": "Cangas / Picos base", "lat": 43.35, "lng": -5.1294, "role": "overnight", "note": "Covadonga Lakes and sanctuary day."}, {"date": "Tue 2 Jun", "name": "Cangas / Arenas de Cabrales base", "lat": 43.3037, "lng": -4.8169, "role": "overnight", "note": "Ruta del Cares partial hike day."}, {"date": "Wed 3 Jun", "name": "Oviedo", "lat": 43.3619, "lng": -5.8494, "role": "overnight", "note": "Cudillero visit, then Oviedo food night."}, {"date": "Thu 4 Jun", "name": "Bordeaux / Landes return overnight", "lat": 44.8378, "lng": -0.5792, "role": "overnight", "note": "Long return transit from Asturias."}, {"date": "Fri 5 Jun", "name": "Beaune / Dijon / Besançon area", "lat": 47.238, "lng": 6.0244, "role": "overnight", "note": "Eastern France transit overnight. Beaune, Dijon, Besançon or Mulhouse depending energy."}, {"date": "Sat 6 Jun", "name": "Zürich", "lat": 47.3769, "lng": 8.5417, "role": "finish", "note": "Arrive home with 7–8 June as buffer/recovery."}];
+const dayMaps = [{"day": "Day 1 — Fri 22 May", "title": "Osnabrück → Troyes / Reims area", "drive": "6–7.5h RV driving after 14:00", "sleep": "Troyes area, with Reims as earlier fallback", "what": "Transit only. Dinner stop on the road; no sightseeing pressure.", "points": [{"name": "Osnabrück — start", "lat": 52.2799, "lng": 8.0472, "type": "start", "note": "Depart after 14:00."}, {"name": "Reims — fallback sleep", "lat": 49.2583, "lng": 4.0317, "type": "optional", "note": "Earlier fallback if tired."}, {"name": "Troyes — preferred sleep", "lat": 48.2973, "lng": 4.0744, "type": "overnight", "note": "Better if energy is good; reduces Saturday drive."}], "google_maps_url": "https://www.google.com/maps/dir/?api=1&origin=52.2799,8.0472&destination=48.2973,4.0744&travelmode=driving"}, {"day": "Day 2 — Sat 23 May", "title": "Troyes / Reims → Landes / Bayonne area", "drive": "7.5–9h RV driving depending Friday progress", "sleep": "Bayonne, Capbreton, Biarritz or Landes coast area", "what": "Big transit day. Optional simple stop around Bordeaux; save visit energy for the coast.", "points": [{"name": "Troyes / Reims area", "lat": 48.2973, "lng": 4.0744, "type": "start", "note": "Morning departure."}, {"name": "Poitiers / Angoulême corridor", "lat": 46.5802, "lng": 0.3404, "type": "optional", "note": "Lunch / stretch stop option."}, {"name": "Bordeaux bypass / dinner option", "lat": 44.8378, "lng": -0.5792, "type": "optional", "note": "Use as fallback if the drive is tiring."}, {"name": "Bayonne / Landes coast", "lat": 43.4929, "lng": -1.4748, "type": "overnight", "note": "Ideal target before Spain."}], "google_maps_url": "https://www.google.com/maps/dir/?api=1&origin=48.2973,4.0744&destination=43.4929,-1.4748&travelmode=driving"}, {"day": "Day 3 — Sun 24 May", "title": "Bayonne → Saint-Jean-de-Luz → Hondarribia → San Sebastián", "drive": "2–3h total, broken into short hops", "sleep": "San Sebastián campsite / camper area", "what": "First proper travel day: French Basque towns, Hondarribia, then San Sebastián base.", "points": [{"name": "Bayonne old town", "lat": 43.4929, "lng": -1.4748, "type": "visit", "note": "1.5–2h: old town, riverfront, cathedral area."}, {"name": "Saint-Jean-de-Luz", "lat": 43.3881, "lng": -1.6622, "type": "visit", "note": "1.5h: harbour, beach, old streets."}, {"name": "Hondarribia old quarter", "lat": 43.3623, "lng": -1.791, "type": "visit", "note": "2–3h: old quarter, marina district, pintxos/seafood."}, {"name": "San Sebastián overnight", "lat": 43.3183, "lng": -1.9812, "type": "overnight", "note": "Sleep near city for full day tomorrow."}], "google_maps_url": "https://www.google.com/maps/dir/?api=1&origin=43.4929,-1.4748&destination=43.3183,-1.9812&travelmode=driving&waypoints=43.3881,-1.6622|43.3623,-1.791"}, {"day": "Day 4 — Mon 25 May", "title": "Full San Sebastián / Donostia day", "drive": "0–30m, ideally park once and use walking/bikes/bus", "sleep": "Same San Sebastián campsite / camper area", "what": "Full city day: beach, old town, viewpoints, pintxos.", "points": [{"name": "La Concha promenade", "lat": 43.318, "lng": -1.9869, "type": "visit", "note": "Morning beach/promenade walk."}, {"name": "Parte Vieja / Old Town", "lat": 43.3236, "lng": -1.9857, "type": "food", "note": "Pintxos zone; good for lunch/evening."}, {"name": "Monte Urgull", "lat": 43.3247, "lng": -1.9905, "type": "visit", "note": "Short climb and city views."}, {"name": "Zurriola beach", "lat": 43.3268, "lng": -1.974, "type": "optional", "note": "Surf/beach area."}, {"name": "Peine del Viento", "lat": 43.3215, "lng": -2.0056, "type": "visit", "note": "Coastal sculpture / viewpoint."}, {"name": "Monte Igueldo viewpoint", "lat": 43.3218, "lng": -2.0095, "type": "optional", "note": "Best sunset/viewpoint option."}], "google_maps_url": "https://www.google.com/maps/dir/?api=1&origin=43.318,-1.9869&destination=43.3215,-2.0056&travelmode=driving&waypoints=43.3236,-1.9857|43.3247,-1.9905"}, {"day": "Day 5 — Tue 26 May", "title": "San Sebastián → Zarautz → Getaria → Zumaia → Lekeitio/Gaztelugatxe → Bilbao", "drive": "3–4h total if you choose Lekeitio; similar if choosing Gaztelugatxe", "sleep": "Bilbao / Kobetamendi area", "what": "Basque coast day. Choose Lekeitio OR Gaztelugatxe; doing both makes the day too dense.", "points": [{"name": "San Sebastián", "lat": 43.3183, "lng": -1.9812, "type": "start", "note": "Early start."}, {"name": "Zarautz beach", "lat": 43.2848, "lng": -2.1715, "type": "visit", "note": "45m–1h beach/coffee stop."}, {"name": "Getaria harbour", "lat": 43.3041, "lng": -2.2043, "type": "food", "note": "1.5–2h; grilled fish lunch if timing works."}, {"name": "Zumaia flysch / Itzurun", "lat": 43.3002, "lng": -2.258, "type": "visit", "note": "1–1.5h short coastal/geology walk."}, {"name": "Lekeitio", "lat": 43.3627, "lng": -2.5048, "type": "optional", "note": "Choose this for fishing village/harbour."}, {"name": "San Juan de Gaztelugatxe", "lat": 43.4467, "lng": -2.7854, "type": "optional", "note": "Choose this instead of Lekeitio; may require timed access."}, {"name": "Bilbao / Kobetamendi overnight", "lat": 43.2564, "lng": -2.9634, "type": "overnight", "note": "Practical RV overnight for Bilbao."}], "google_maps_url": "https://www.google.com/maps/dir/?api=1&origin=43.3183,-1.9812&destination=43.2564,-2.9634&travelmode=driving&waypoints=43.2848,-2.1715|43.3041,-2.2043|43.3002,-2.258"}, {"day": "Day 6 — Wed 27 May", "title": "Bilbao visit → Santander work base", "drive": "1.5–2h Bilbao to Santander", "sleep": "Santander / Camping Cabo Mayor recommended", "what": "Visit Bilbao until mid-afternoon, then drive to Santander and set up for work morning.", "points": [{"name": "Bilbao Caravan Park / Kobetamendi", "lat": 43.2564, "lng": -2.9634, "type": "start", "note": "Morning start / RV base."}, {"name": "Guggenheim Bilbao", "lat": 43.2687, "lng": -2.934, "type": "visit", "note": "Exterior + optional interior visit."}, {"name": "Casco Viejo / Plaza Nueva", "lat": 43.2609, "lng": -2.9224, "type": "food", "note": "Pintxos lunch / old town walk."}, {"name": "Santander / Camping Cabo Mayor", "lat": 43.4775, "lng": -3.7925, "type": "work", "note": "Arrive early evening. Test Wi-Fi and mobile data."}], "google_maps_url": "https://www.google.com/maps/dir/?api=1&origin=43.2564,-2.9634&destination=43.4775,-3.7925&travelmode=driving&waypoints=43.2687,-2.934|43.2609,-2.9224"}, {"day": "Day 7 — Thu 28 May", "title": "Work morning in Santander → Santander visit → Santillana/Comillas area", "drive": "45m–1h after work", "sleep": "Santillana / Comillas / Cóbreces area", "what": "Do not move before work. After work, visit Santander and reposition west.", "points": [{"name": "Camping Cabo Mayor / work base", "lat": 43.4775, "lng": -3.7925, "type": "work", "note": "Work morning; stay parked and connected."}, {"name": "El Sardinero", "lat": 43.474, "lng": -3.783, "type": "visit", "note": "Beach / promenade."}, {"name": "Magdalena Peninsula", "lat": 43.4693, "lng": -3.7719, "type": "visit", "note": "Bay views, walk."}, {"name": "Centro Botín / bayfront", "lat": 43.4594, "lng": -3.8051, "type": "optional", "note": "Optional city/culture stop."}, {"name": "Santillana del Mar area", "lat": 43.3897, "lng": -4.1085, "type": "overnight", "note": "Good base for Friday morning."}], "google_maps_url": "https://www.google.com/maps/dir/?api=1&origin=43.4775,-3.7925&destination=43.3897,-4.1085&travelmode=driving&waypoints=43.474,-3.783|43.4693,-3.7719"}, {"day": "Day 8 — Fri 29 May", "title": "Santillana → Altamira → Comillas → El Soplao → Potes", "drive": "2.5–3h total", "sleep": "Potes / Camping La Viorna recommended", "what": "Cantabria heritage and cave day, ending in Picos de Europa foothills.", "points": [{"name": "Santillana del Mar", "lat": 43.3897, "lng": -4.1085, "type": "visit", "note": "Early 1–1.5h old-town walk."}, {"name": "Altamira Museum / Neocave", "lat": 43.377, "lng": -4.122, "type": "visit", "note": "Book ahead; morning slot ideal."}, {"name": "Comillas / El Capricho", "lat": 43.3867, "lng": -4.291, "type": "visit", "note": "Architecture + lunch stop."}, {"name": "El Soplao Cave", "lat": 43.3035, "lng": -4.4055, "type": "visit", "note": "Book ahead if including it."}, {"name": "Potes / La Viorna", "lat": 43.1518, "lng": -4.6369, "type": "overnight", "note": "Mountain overnight; good services."}], "google_maps_url": "https://www.google.com/maps/dir/?api=1&origin=43.3897,-4.1085&destination=43.1518,-4.6369&travelmode=driving&waypoints=43.377,-4.122|43.3867,-4.291|43.3035,-4.4055"}, {"day": "Day 9 — Sat 30 May", "title": "Potes → Fuente Dé → Llanes / Ribadesella", "drive": "2.5–3h total", "sleep": "Llanes or Ribadesella area", "what": "Picos viewpoint morning, then Asturias coast evening.", "points": [{"name": "Potes", "lat": 43.1546, "lng": -4.6235, "type": "start", "note": "Short old-town walk."}, {"name": "Fuente Dé cable car", "lat": 43.1433, "lng": -4.8123, "type": "visit", "note": "Book early slot; 1.5–3h depending walk."}, {"name": "Llanes", "lat": 43.4212, "lng": -4.7546, "type": "overnight", "note": "Harbour, old town, beaches."}, {"name": "Ribadesella alternative", "lat": 43.4614, "lng": -5.0595, "type": "optional", "note": "Alternative sleep if you want closer to Sella day."}], "google_maps_url": "https://www.google.com/maps/dir/?api=1&origin=43.1546,-4.6235&destination=43.4212,-4.7546&travelmode=driving&waypoints=43.1433,-4.8123"}, {"day": "Day 10 — Sun 31 May", "title": "Llanes / Ribadesella → Arriondas kayak → Cangas de Onís", "drive": "1–1.5h total", "sleep": "Cangas de Onís", "what": "Sella kayaking day. Use a medium route, not necessarily the full 16 km.", "points": [{"name": "Llanes / Ribadesella start", "lat": 43.4212, "lng": -4.7546, "type": "start", "note": "Start from coast."}, {"name": "Arriondas kayak start", "lat": 43.3899, "lng": -5.188, "type": "visit", "note": "Classic Sella kayak departure area."}, {"name": "Ribadesella kayak finish / beach", "lat": 43.4614, "lng": -5.0595, "type": "visit", "note": "Finish/transfer area or non-kayak visit."}, {"name": "Cangas de Onís", "lat": 43.35, "lng": -5.1294, "type": "overnight", "note": "Base for Covadonga/Picos."}], "google_maps_url": "https://www.google.com/maps/dir/?api=1&origin=43.4212,-4.7546&destination=43.35,-5.1294&travelmode=driving&waypoints=43.3899,-5.188|43.4614,-5.0595"}, {"day": "Day 11 — Mon 1 Jun", "title": "Covadonga Lakes + Cangas de Onís", "drive": "Minimal if using official shuttle/parking", "sleep": "Cangas de Onís or Arenas de Cabrales area", "what": "Lakes and sanctuary day. Use shuttle/restricted-access system from 1 June onwards.", "points": [{"name": "Cangas de Onís base", "lat": 43.35, "lng": -5.1294, "type": "start", "note": "Park/base for the day."}, {"name": "Covadonga Sanctuary", "lat": 43.3093, "lng": -5.0557, "type": "visit", "note": "Visit on the way up/down."}, {"name": "Covadonga Lakes", "lat": 43.2695, "lng": -4.9881, "type": "visit", "note": "Lake loop and viewpoints."}, {"name": "Cangas de Onís evening", "lat": 43.35, "lng": -5.1294, "type": "overnight", "note": "Dinner and overnight."}], "google_maps_url": "https://www.google.com/maps/dir/?api=1&origin=43.35,-5.1294&destination=43.35,-5.1294&travelmode=driving&waypoints=43.3093,-5.0557|43.2695,-4.9881"}, {"day": "Day 12 — Tue 2 Jun", "title": "Ruta del Cares partial hike", "drive": "2–2.5h total from Cangas, less if sleeping near Arenas", "sleep": "Cangas / Arenas de Cabrales area", "what": "Do a partial out-and-back from Poncebos, not the full 22 km return unless you want a major hiking day.", "points": [{"name": "Cangas de Onís / Arenas base", "lat": 43.3037, "lng": -4.8169, "type": "start", "note": "Arenas is closer to Poncebos."}, {"name": "Poncebos trailhead", "lat": 43.2576, "lng": -4.8305, "type": "visit", "note": "Start partial Ruta del Cares hike."}, {"name": "Ruta del Cares turnaround area", "lat": 43.2415, "lng": -4.872, "type": "optional", "note": "Approximate partial-hike turnaround; choose based on time/energy."}, {"name": "Arenas de Cabrales", "lat": 43.3037, "lng": -4.8169, "type": "food", "note": "Cabrales cheese / mountain food."}], "google_maps_url": "https://www.google.com/maps/dir/?api=1&origin=43.3037,-4.8169&destination=43.3037,-4.8169&travelmode=driving&waypoints=43.2576,-4.8305"}, {"day": "Day 13 — Wed 3 Jun", "title": "Cangas / Arenas → Cudillero → Oviedo", "drive": "2.5–3h total", "sleep": "Oviedo", "what": "Asturias coast village plus Oviedo food night.", "points": [{"name": "Cangas / Arenas base", "lat": 43.35, "lng": -5.1294, "type": "start", "note": "Morning departure."}, {"name": "Cudillero", "lat": 43.562, "lng": -6.1467, "type": "visit", "note": "2–3h fishing village, viewpoints, seafood."}, {"name": "Playa del Silencio viewpoint", "lat": 43.554, "lng": -6.268, "type": "optional", "note": "Optional if weather is good."}, {"name": "Oviedo old town", "lat": 43.3619, "lng": -5.8494, "type": "overnight", "note": "Cathedral, cider street, fabada/cachopo."}], "google_maps_url": "https://www.google.com/maps/dir/?api=1&origin=43.35,-5.1294&destination=43.3619,-5.8494&travelmode=driving&waypoints=43.562,-6.1467"}, {"day": "Day 14 — Thu 4 Jun", "title": "Oviedo → Bordeaux / Landes", "drive": "6.5–8h", "sleep": "Bordeaux / Landes area", "what": "Return transit day. Short breaks only; avoid adding sightseeing unless ahead of schedule.", "points": [{"name": "Oviedo", "lat": 43.3619, "lng": -5.8494, "type": "start", "note": "Start return."}, {"name": "Bilbao / San Sebastián corridor", "lat": 43.263, "lng": -2.935, "type": "optional", "note": "Lunch/stretch corridor."}, {"name": "Bayonne", "lat": 43.4929, "lng": -1.4748, "type": "optional", "note": "Fallback if tired."}, {"name": "Bordeaux / Landes area", "lat": 44.8378, "lng": -0.5792, "type": "overnight", "note": "Preferred overnight to keep Friday manageable."}], "google_maps_url": "https://www.google.com/maps/dir/?api=1&origin=43.3619,-5.8494&destination=44.8378,-0.5792&travelmode=driving"}, {"day": "Day 15 — Fri 5 Jun", "title": "Bordeaux / Landes → Burgundy / Jura / eastern France", "drive": "7–8.5h", "sleep": "Beaune, Dijon, Besançon, Jura or Mulhouse area", "what": "Big France transit day. Choose sleep point based on energy.", "points": [{"name": "Bordeaux / Landes", "lat": 44.8378, "lng": -0.5792, "type": "start", "note": "Morning departure."}, {"name": "Clermont-Ferrand corridor", "lat": 45.7772, "lng": 3.087, "type": "optional", "note": "Possible lunch/stretch corridor."}, {"name": "Beaune / Dijon option", "lat": 47.024, "lng": 4.8403, "type": "optional", "note": "Good wine-region dinner stop if not pushing further."}, {"name": "Besançon / Jura option", "lat": 47.238, "lng": 6.0244, "type": "overnight", "note": "Better if you want a shorter final day to Zürich."}, {"name": "Mulhouse strong-push option", "lat": 47.7508, "lng": 7.3359, "type": "optional", "note": "Use only if energy is high."}], "google_maps_url": "https://www.google.com/maps/dir/?api=1&origin=44.8378,-0.5792&destination=47.238,6.0244&travelmode=driving"}, {"day": "Day 16 — Sat 6 Jun", "title": "Eastern France → Zürich", "drive": "3.5–5h depending overnight point", "sleep": "Home / Zürich", "what": "Final drive home with 7–8 June preserved as buffer/recovery.", "points": [{"name": "Besançon / Jura / Mulhouse area", "lat": 47.238, "lng": 6.0244, "type": "start", "note": "Final transit start."}, {"name": "Basel crossing", "lat": 47.5596, "lng": 7.5886, "type": "optional", "note": "Border / lunch stretch option."}, {"name": "Zürich", "lat": 47.3769, "lng": 8.5417, "type": "finish", "note": "Arrive home."}], "google_maps_url": "https://www.google.com/maps/dir/?api=1&origin=47.238,6.0244&destination=47.3769,8.5417&travelmode=driving"}];
+
+const roleClass = (type) => ['start','finish','overnight','visit','food','work','optional'].includes(type) ? type : 'visit';
+function makeIcon(label, type) {
+  return L.divIcon({
+    className: '',
+    html: `<div class="number-marker ${roleClass(type)}">${label}</div>`,
+    iconSize: [28, 28],
+    iconAnchor: [14, 14]
+  });
+}
+
+function popupHtml(p, label) {
+  const date = p.date ? `<div class="small">${p.date}</div>` : '';
+  const role = p.role || p.type || '';
+  return `<div class="popup-title">${label}. ${p.name}</div>${date}<div class="small"><b>${role}</b></div><div>${p.note || ''}</div>`;
+}
+
+function fitToPoints(map, pts) {
+  const bounds = L.latLngBounds(pts.map(p => [p.lat, p.lng]));
+  map.fitBounds(bounds, { padding: [30, 30] });
+}
+
+function addTileLayer(map) {
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 18,
+    attribution: '&copy; OpenStreetMap contributors'
+  }).addTo(map);
+}
+
+function makeMap(mapId, points, options={}) {
+  const map = L.map(mapId, { scrollWheelZoom: false });
+  addTileLayer(map);
+  const coords = points.map(p => [p.lat, p.lng]);
+  if (coords.length > 1) {
+    L.polyline(coords, { weight: options.weight || 4, opacity: 0.78 }).addTo(map);
+  }
+  points.forEach((p, i) => {
+    const label = options.alpha ? String.fromCharCode(65+i) : String(i+1);
+    L.marker([p.lat, p.lng], { icon: makeIcon(label, p.role || p.type) })
+      .addTo(map)
+      .bindPopup(popupHtml(p, label));
+  });
+  fitToPoints(map, points);
+  return map;
+}
+
+const p4nUrls = [
+  'https://park4night.com/en/search?lat=48.29723&lng=4.074399999999969&z=15',        // D1  Troyes
+  'https://park4night.com/en/search?lat=43.49307&lng=-1.4750799999999344&z=15',      // D2  Bayonne
+  'https://park4night.com/en/search?lat=43.3183&lng=-1.9812100000000328&z=15',       // D3  San Sebastián
+  'https://park4night.com/en/search?lat=43.3183&lng=-1.9812100000000328&z=15',       // D4  San Sebastián
+  'https://park4night.com/en/search?lat=43.263&lng=-2.9349999999999454&z=15',        // D5  Bilbao
+  'https://park4night.com/en/search?lat=43.46204&lng=-3.809970000000021&z=15',       // D6  Santander
+  'https://park4night.com/en/search?lat=43.39065&lng=-4.108050000000048&z=15',       // D7  Santillana del Mar
+  'https://park4night.com/en/search?lat=43.15368&lng=-4.623429999999985&z=15',       // D8  Potes
+  'https://park4night.com/en/search?lat=43.42112&lng=-4.7530799999999545&z=15',      // D9  Llanes
+  'https://park4night.com/en/search?lat=43.31453&lng=-5.065630000000056&z=15',       // D10 Cangas de Onís
+  'https://park4night.com/en/search?lat=43.31453&lng=-5.065630000000056&z=15',       // D11 Cangas de Onís
+  'https://park4night.com/en/search?lat=43.30338&lng=-4.814709999999991&z=15',       // D12 Arenas de Cabrales
+  'https://park4night.com/en/search?lat=43.3606&lng=-5.844900000000052&z=15',        // D13 Oviedo
+  'https://park4night.com/en/search?lat=44.84123&lng=-0.5800400000000536&z=15',      // D14 Bordeaux
+  'https://park4night.com/en/search?lat=47.23802&lng=6.0243600000000015&z=15',       // D15 Besançon
+  'https://park4night.com/en/search?lat=47.37445&lng=8.541040000000066&z=15',        // D16 Zürich
+];
+
+function park4nightUrl(idx) {
+  return p4nUrls[idx] || 'https://park4night.com/en/search';
+}
+
+const dayPalette = [
+  { bg: '#fef9e7', border: '#f59e0b' },  // D1  warm amber
+  { bg: '#fff4ee', border: '#f97316' },  // D2  coral
+  { bg: '#eff8ff', border: '#3b82f6' },  // D3  sky blue
+  { bg: '#ecfdf5', border: '#10b981' },  // D4  mint
+  { bg: '#f5f3ff', border: '#8b5cf6' },  // D5  lavender
+  { bg: '#fdf2f8', border: '#ec4899' },  // D6  rose
+  { bg: '#f0fdfa', border: '#14b8a6' },  // D7  teal
+  { bg: '#fffbeb', border: '#d97706' },  // D8  golden
+  { bg: '#eef2ff', border: '#6366f1' },  // D9  indigo
+  { bg: '#ecfdf5', border: '#059669' },  // D10 emerald
+  { bg: '#ecfeff', border: '#06b6d4' },  // D11 cyan
+  { bg: '#faf5ff', border: '#9333ea' },  // D12 purple
+  { bg: '#fff7ed', border: '#ea580c' },  // D13 orange
+  { bg: '#eff6ff', border: '#2563eb' },  // D14 blue
+  { bg: '#fdf4ff', border: '#c026d3' },  // D15 fuchsia
+  { bg: '#f0fdf4', border: '#16a34a' },  // D16 green
+];
+
+makeMap('overview-map', routeStops, { weight: 5 });
+
+const dayContainer = document.getElementById('day-sections');
+const pickerInner = document.querySelector('#day-picker-bar .picker-inner');
+const daySections = [];
+
+dayMaps.forEach((d, idx) => {
+  const mapId = `day-map-${idx+1}`;
+  const section = document.createElement('section');
+  section.className = 'day-section';
+  section.dataset.dayIdx = idx;
+  section.style.background = dayPalette[idx].bg;
+  section.style.borderLeft = `5px solid ${dayPalette[idx].border}`;
+  section.innerHTML = `
+    <h2>${d.day}</h2>
+    <h3>${d.title}</h3>
+    <div class="meta">
+      <div class="pill"><b>Expected driving:</b><br>${d.drive}</div>
+      <div class="pill"><b>Sleep / base:</b><br>${d.sleep}</div>
+      <div class="pill"><b>Plan:</b><br>${d.what}</div>
+    </div>
+    <a class="button" href="${d.google_maps_url}" target="_blank" rel="noopener">Open this day in Google Maps</a>
+    <a class="button p4n-btn" href="${park4nightUrl(idx)}" target="_blank" rel="noopener">🅿 Find parking on Park4Night</a>
+    <div id="${mapId}" class="map"></div>
+  `;
+  dayContainer.appendChild(section);
+  daySections.push(section);
+  const m = makeMap(mapId, d.points);
+  m.invalidateSize();
+
+  // "What to see" button
+  const wtsBtn = document.createElement('button');
+  wtsBtn.className = 'wts-btn';
+  wtsBtn.textContent = '📸 What to see';
+  wtsBtn.addEventListener('click', () => openPhotoModal(d));
+  section.querySelector('a.button').insertAdjacentElement('afterend', wtsBtn);
+
+  // "What to do" button
+  const wtdBtn = document.createElement('button');
+  wtdBtn.className = 'wtd-btn';
+  wtdBtn.textContent = '📋 What to do';
+  wtdBtn.addEventListener('click', () => openWtdModal(idx, d.day));
+  wtsBtn.insertAdjacentElement('afterend', wtdBtn);
+
+  // Add pill to picker bar
+  const shortLabel = `D${idx+1}`;
+  const btn = document.createElement('button');
+  btn.className = 'day-btn';
+  btn.textContent = shortLabel;
+  btn.title = d.day + ' — ' + d.title;
+  btn.addEventListener('click', () => filterDay(idx, btn));
+  pickerInner.appendChild(btn);
+});
+
+function cleanName(raw) {
+  const genericSuffixes = /\s+(base|trailhead|turnaround area|evening|overnight|start|corridor|bypass|option|viewpoint|fallback|crossing|finish|area|launch|alternative)\s*$/i;
+  return raw.split(' — ')[0].split(' / ')[0].split(' (')[0].replace(genericSuffixes, '').trim();
+}
+
+async function openPhotoModal(dayData) {
+  const overlay = document.getElementById('photo-overlay');
+  const title   = document.getElementById('photo-modal-title');
+  const content = document.getElementById('photo-modal-content');
+
+  title.textContent = dayData.day + ' — What to see';
+  content.innerHTML = '<div class="photo-loading">Loading photos…</div>';
+  overlay.classList.add('open');
+
+  // Build list of unique location names for this day (skip pure transit "start" entries)
+  const names = [...new Set(
+    dayData.points
+      .filter(p => p.type !== 'start' || dayData.points.length <= 2)
+      .map(p => cleanName(p.name))
+  )];
+
+  try {
+    const cards = await Promise.all(names.map(name => fetchWikiCard(name)));
+    const valid = cards.filter(Boolean);
+    if (valid.length === 0) {
+      content.innerHTML = '<div class="photo-error">No photos found for these locations.</div>';
+    } else {
+      content.innerHTML = `<div class="photo-grid">${valid.join('')}</div>
+        <p style="margin-top:14px;font-size:12px;color:#9ca3af;">Images via Wikipedia / Wikimedia Commons (CC licences).</p>`;
+    }
+  } catch (e) {
+    content.innerHTML = '<div class="photo-error">Could not load photos — check your internet connection.</div>';
+  }
+}
+
+function jsonp(url) {
+  return new Promise((resolve, reject) => {
+    const cb = '_wkcb_' + Math.random().toString(36).slice(2);
+    const script = document.createElement('script');
+    const timer = setTimeout(() => {
+      delete window[cb]; script.remove(); reject(new Error('timeout'));
+    }, 8000);
+    window[cb] = (data) => {
+      clearTimeout(timer); delete window[cb]; script.remove(); resolve(data);
+    };
+    script.src = url + '&callback=' + cb;
+    document.head.appendChild(script);
+  });
+}
+
+async function fetchWikiCard(locationName) {
+  // Step 1: use opensearch to find the best-matching Wikipedia article title
+  // (handles fuzzy names like "Covadonga Lakes", "Poncebos trailhead", etc.)
+  const searchUrl = `https://en.wikipedia.org/w/api.php?action=opensearch&search=${encodeURIComponent(locationName)}&limit=1&format=json`;
+  const searchData = await jsonp(searchUrl);
+  const matched = searchData[1]?.[0];
+  if (!matched) return null;
+
+  // Step 2: fetch the thumbnail + description for that article
+  const imgUrl = `https://en.wikipedia.org/w/api.php?action=query&titles=${encodeURIComponent(matched)}&prop=pageimages|pageterms&pithumbsize=600&pilimit=1&wbptterms=description&format=json`;
+  const data  = await jsonp(imgUrl);
+  const pages = Object.values(data.query.pages);
+  const page  = pages[0];
+  if (!page || page.missing !== undefined || !page.thumbnail) return null;
+  const img  = page.thumbnail.source;
+  const desc = page.terms?.description?.[0] || '';
+  return `
+    <div class="photo-card">
+      <img src="${img}" alt="${matched}" loading="lazy" />
+      <div class="photo-card-caption">${matched}
+        ${desc ? `<div class="photo-card-sub">${desc}</div>` : ''}
+      </div>
+    </div>`;
+}
+
+function closePhotoModal(e) {
+  if (e && e.target !== document.getElementById('photo-overlay') && !e.target.classList.contains('photo-close')) return;
+  document.getElementById('photo-overlay').classList.remove('open');
+}
+
+// ── What to do modal ──────────────────────────────────────────────────────
+
+const dayPlans = [
+  { // D1 — Troyes / Reims
+    html: `
+      <h4>Plan</h4>
+      <ul class="wtd-notes">
+        <li>Depart Osnabrück around <b>14:00</b></li>
+        <li>Pure transit evening — no sightseeing pressure</li>
+        <li>Dinner stop on the road</li>
+        <li>Sleep near Reims or Troyes</li>
+      </ul>
+      <h4>Recommendation</h4>
+      <ul class="wtd-notes">
+        <li>Aim for <b>Troyes</b> if energy is good — it makes Day 2 more realistic</li>
+        <li>Stop around <b>Reims</b> if energy drops earlier</li>
+      </ul>`,
+    links: [{ label: "Google Maps route", url: "https://www.google.com/maps/dir/?api=1&origin=52.2799,8.0472&destination=48.2973,4.0744&travelmode=driving" }]
+  },
+  { // D2 — Bayonne / Landes
+    html: `
+      <h4>Plan</h4>
+      <ul class="wtd-notes">
+        <li>Start early</li>
+        <li>Route: Troyes/Reims → Poitiers/Angoulême → Bordeaux bypass → Landes/Bayonne</li>
+        <li>Keep sightseeing minimal — save energy for Basque Country</li>
+      </ul>
+      <h4>Where to stop</h4>
+      <ul class="wtd-notes">
+        <li>Best if energy is good: <b>Capbreton / Bayonne / Biarritz area</b></li>
+        <li>If tired: <b>Bordeaux / Arcachon area</b></li>
+      </ul>
+      <h4>Food</h4>
+      <ul class="wtd-notes">
+        <li>Simple French transit dinner — save the food focus for Basque Country</li>
+      </ul>`,
+    links: [{ label: "Google Maps route", url: "https://www.google.com/maps/dir/?api=1&origin=48.2973,4.0744&destination=43.4929,-1.4748&travelmode=driving" }]
+  },
+  { // D3 — San Sebastián
+    html: `
+      <h4>Morning — Bayonne <span style="font-weight:400;color:#6b7280">(1.5–2h)</span></h4>
+      <ul class="wtd-notes">
+        <li>Old town and riverfront</li>
+        <li>Cathedral area</li>
+        <li>Coffee / chocolate stop</li>
+      </ul>
+      <h4>Midday — Saint-Jean-de-Luz <span style="font-weight:400;color:#6b7280">(drive 30–40m · 1.5h visit)</span></h4>
+      <ul class="wtd-notes">
+        <li>Harbour and beachfront</li>
+        <li>Old streets</li>
+      </ul>
+      <h4>Afternoon / Evening — Hondarribia <span style="font-weight:400;color:#6b7280">(drive 25–35m · 2–3h visit)</span></h4>
+      <ul class="wtd-notes">
+        <li>Old Quarter</li>
+        <li>Marina neighbourhood</li>
+        <li>Pintxos / seafood dinner — worth keeping, strong food culture</li>
+      </ul>
+      <h4>Overnight</h4>
+      <ul class="wtd-notes">
+        <li>Sleep near San Sebastián campsite so Monday is easy</li>
+      </ul>`,
+    links: [
+      { label: "Google Maps route", url: "https://www.google.com/maps/dir/?api=1&origin=43.4929,-1.4748&destination=43.3183,-1.9812&travelmode=driving&waypoints=43.3881,-1.6622|43.3623,-1.791" },
+      { label: "Hondarribia tourism", url: "https://hondarribiaturismo.com/en/" },
+      { label: "San Sebastián campsites", url: "https://sansebastianturismoa.eus/en/where-to-sleep/camp-sites/" }
+    ]
+  },
+  { // D4 — San Sebastián full day
+    html: `
+      <h4>Morning</h4>
+      <ul class="wtd-notes">
+        <li><b>La Concha promenade</b></li>
+        <li>Old Town coffee and market / old streets</li>
+      </ul>
+      <h4>Midday</h4>
+      <ul class="wtd-notes">
+        <li><b>Monte Urgull</b> or Paseo Nuevo</li>
+        <li>Optional beach time</li>
+      </ul>
+      <h4>Afternoon</h4>
+      <ul class="wtd-notes">
+        <li><b>Wind Comb / Ondarreta</b></li>
+        <li>Optional <b>Monte Igueldo</b> viewpoint</li>
+      </ul>
+      <h4>Evening</h4>
+      <ul class="wtd-notes">
+        <li>Pintxos crawl in the Old Town</li>
+      </ul>
+      <h4>Bike note</h4>
+      <ul class="wtd-notes">
+        <li>Good bike day: La Concha / Ondarreta / Zurriola areas</li>
+        <li>Avoid dense Old Town at dinner time on bike</li>
+      </ul>`,
+    links: [
+      { label: "Google Maps local route", url: "https://www.google.com/maps/dir/?api=1&origin=43.318,-1.9869&destination=43.3215,-2.0056&travelmode=driving&waypoints=43.3236,-1.9857|43.3247,-1.9905" },
+      { label: "San Sebastián official tourism", url: "https://sansebastianturismoa.eus/en/" },
+      { label: "San Sebastián campsites", url: "https://sansebastianturismoa.eus/en/where-to-sleep/camp-sites/" }
+    ]
+  },
+  { // D5 — Bilbao
+    html: `
+      <h4>Stop 1 — Zarautz <span style="font-weight:400;color:#6b7280">(drive 30–40m from SS · 45m–1h visit)</span></h4>
+      <ul class="wtd-notes"><li>Beach, short walk, coffee</li></ul>
+      <h4>Stop 2 — Getaria <span style="font-weight:400;color:#6b7280">(drive 10–15m · 1.5–2h visit)</span></h4>
+      <ul class="wtd-notes">
+        <li>Fishing village and harbour</li>
+        <li>Grilled fish lunch if timing works</li>
+      </ul>
+      <h4>Stop 3 — Zumaia Flysch <span style="font-weight:400;color:#6b7280">(drive 15–20m · 1–1.5h visit)</span></h4>
+      <ul class="wtd-notes">
+        <li>Flysch viewpoint and short coastal walk</li>
+        <li>Do not attempt a long hike today</li>
+      </ul>
+      <h4>Stop 4 — Choose ONE</h4>
+      <ul class="wtd-notes">
+        <li><b>Option A — Lekeitio</b> (drive 1h–1h15 · 1–1.5h): harbour, old town, beach view</li>
+        <li><b>Option B — Gaztelugatxe</b>: check timed access before committing — may require booking</li>
+        <li>Do not do both unless you want a rushed day</li>
+      </ul>
+      <h4>Overnight — Bilbao</h4>
+      <ul class="wtd-notes">
+        <li>Best RV stop: <b>Bilbao Caravan Park / Kobetamendi</b> — practical for sleeping outside centre and using public transport/taxi in</li>
+      </ul>`,
+    links: [
+      { label: "Google Maps route", url: "https://www.google.com/maps/dir/?api=1&origin=43.3183,-1.9812&destination=43.2564,-2.9634&travelmode=driving&waypoints=43.2848,-2.1715|43.3041,-2.2043|43.3002,-2.258" },
+      { label: "Zumaia / Basque Coast Geopark", url: "https://zumaia.eus/en/tourism/what-to-do/the-geopark-project" },
+      { label: "Gaztelugatxe tickets", url: "https://public.tiketa.eus/gaztelugatxe/?lang=en" },
+      { label: "Bilbao Caravan Park", url: "https://www.bilbaoturismo.net/BilbaoTurismo/en/autocaravaning" }
+    ]
+  },
+  { // D6 — Santander
+    html: `
+      <h4>Morning / Early Afternoon — Bilbao <span style="font-weight:400;color:#6b7280">(5–6h)</span></h4>
+      <ul class="wtd-notes">
+        <li>Guggenheim exterior</li>
+        <li>Guggenheim interior if you want the museum properly</li>
+        <li>River walk</li>
+        <li>Casco Viejo</li>
+        <li>Pintxos lunch</li>
+      </ul>
+      <h4>Afternoon drive to Santander</h4>
+      <ul class="wtd-notes">
+        <li>Leave Bilbao around <b>15:30–16:00</b></li>
+        <li>Arrive Santander around <b>17:30–18:00</b></li>
+      </ul>
+      <h4>Overnight — work stability ⚠️</h4>
+      <ul class="wtd-notes">
+        <li>Best choice: <b>Camping Cabo Mayor</b> — most important booking of the trip because of Thursday work morning</li>
+        <li>Fallback: <b>Las Llamas official motorhome parking</b> — good location but do not rely on it for work Wi-Fi</li>
+      </ul>
+      <h4>Evening</h4>
+      <ul class="wtd-notes">
+        <li>Set up for work</li>
+        <li>Test campsite Wi-Fi and mobile data</li>
+        <li>Charge laptops and all devices</li>
+        <li>Dinner near Sardinero / Santander city</li>
+      </ul>`,
+    links: [
+      { label: "Google Maps route", url: "https://www.google.com/maps/dir/?api=1&origin=43.2564,-2.9634&destination=43.4775,-3.7925&travelmode=driving&waypoints=43.2687,-2.934|43.2609,-2.9224" },
+      { label: "Bilbao tourism", url: "https://www.spain.info/en/destination/bilbao/" },
+      { label: "Bilbao Caravan Park", url: "https://www.bilbaoturismo.net/BilbaoTurismo/en/autocaravaning" },
+      { label: "Camping Cabo Mayor", url: "https://cabomayor.com/en/services/" },
+      { label: "Santander motorhome info", url: "https://turismo.santander.es/en/organising-your-journey/mothorhomes-and-campervans" }
+    ]
+  },
+  { // D7 — Santander work + Santillana
+    html: `
+      <h4>Morning — Work block ⚠️</h4>
+      <ul class="wtd-notes">
+        <li><b>08:30–13:00 work</b> — keep the RV parked and stable</li>
+        <li>Do NOT change location before work</li>
+        <li>Use campsite Wi-Fi as primary; mobile data as backup</li>
+      </ul>
+      <h4>Afternoon — Santander <span style="font-weight:400;color:#6b7280">(3–4h)</span></h4>
+      <ul class="wtd-notes">
+        <li><b>El Sardinero</b> beach / promenade</li>
+        <li><b>Magdalena Peninsula</b> — bay views and walk</li>
+        <li>Optional: <b>Centro Botín</b> / bayfront culture area</li>
+      </ul>
+      <h4>Food</h4>
+      <ul class="wtd-notes">
+        <li>Rabas (battered squid rings — Cantabrian specialty)</li>
+        <li>Seafood</li>
+        <li>Anchovies if you route via Santoña another day</li>
+      </ul>
+      <h4>Late afternoon / evening</h4>
+      <ul class="wtd-notes">
+        <li>Drive to Santillana del Mar area, or Comillas / Cóbreces area</li>
+      </ul>`,
+    links: [
+      { label: "Google Maps route", url: "https://www.google.com/maps/dir/?api=1&origin=43.4775,-3.7925&destination=43.3897,-4.1085&travelmode=driving&waypoints=43.474,-3.783|43.4693,-3.7719" },
+      { label: "Camping Cabo Mayor", url: "https://cabomayor.com/en/services/" },
+      { label: "Santander Magdalena & Sardinero", url: "https://turismo.santander.es/en/what-to-do/travelling-around-the-city/magdalena-and-sardinero" },
+      { label: "Santander motorhome info", url: "https://turismo.santander.es/en/organising-your-journey/mothorhomes-and-campervans" }
+    ]
+  },
+  { // D8 — Potes
+    html: `
+      <h4>09:00–10:30 — Santillana del Mar</h4>
+      <ul class="wtd-notes">
+        <li>Old streets and collegiate church area</li>
+        <li>Coffee before the crowds arrive</li>
+      </ul>
+      <h4>10:30–12:30 — Altamira Museum / Neocave</h4>
+      <ul class="wtd-notes">
+        <li>Book ahead if possible — morning slot ideal</li>
+      </ul>
+      <h4>13:00–14:30 — Comillas <span style="font-weight:400;color:#6b7280">(drive 25–30m from Altamira)</span></h4>
+      <ul class="wtd-notes">
+        <li><b>El Capricho de Gaudí</b> exterior / interior if you care about architecture</li>
+        <li>Quick lunch</li>
+      </ul>
+      <h4>15:30–17:00 — El Soplao Cave <span style="font-weight:400;color:#6b7280">(drive 45–55m from Comillas)</span></h4>
+      <ul class="wtd-notes">
+        <li>Book tickets ahead</li>
+        <li>If the day feels too packed, cut El Soplao and go earlier to Potes</li>
+      </ul>
+      <h4>17:15–18:45 — Drive to Potes <span style="font-weight:400;color:#6b7280">(1h–1h20)</span></h4>
+      <ul class="wtd-notes">
+        <li>Arrive before dark if possible — roads become more mountain-like</li>
+        <li>Overnight: <b>Camping La Viorna</b> near Potes</li>
+      </ul>`,
+    links: [
+      { label: "Google Maps route", url: "https://www.google.com/maps/dir/?api=1&origin=43.3897,-4.1085&destination=43.1518,-4.6369&travelmode=driving&waypoints=43.377,-4.122|43.3867,-4.291|43.3035,-4.4055" },
+      { label: "Altamira Museum", url: "https://www.cultura.gob.es/mnaltamira/en/visita.html" },
+      { label: "El Capricho de Gaudí", url: "https://www.spain.info/en/places-of-interest/capricho-gaudi/" },
+      { label: "El Soplao Cave", url: "https://www.elsoplao.es/en/visit-information/information-and-prices" },
+      { label: "Camping La Viorna", url: "https://campinglaviorna.com/en/" }
+    ]
+  },
+  { // D9 — Llanes
+    html: `
+      <h4>Morning — Potes <span style="font-weight:400;color:#6b7280">(1h)</span></h4>
+      <ul class="wtd-notes">
+        <li>Old town, bridges and river area</li>
+        <li>Coffee</li>
+      </ul>
+      <h4>Late Morning — Fuente Dé cable car <span style="font-weight:400;color:#6b7280">(drive 35–45m from Potes)</span></h4>
+      <ul class="wtd-notes">
+        <li>Book the earliest slot you can</li>
+        <li>Cable car + viewpoint only: <b>1.5h</b></li>
+        <li>Cable car + short walk: <b>2.5–3h</b></li>
+      </ul>
+      <h4>Afternoon — Drive to Asturias</h4>
+      <ul class="wtd-notes">
+        <li>Fuente Dé / Potes → Llanes: <b>1h45–2h15</b></li>
+      </ul>
+      <h4>Evening — Llanes</h4>
+      <ul class="wtd-notes">
+        <li>Old town and harbour</li>
+        <li>San Pedro coastal walk</li>
+        <li>Beach sunset if weather is good</li>
+        <li>Good RV option: Llanes motorhome area, or nearby campsite for showers/laundry</li>
+      </ul>`,
+    links: [
+      { label: "Google Maps route", url: "https://www.google.com/maps/dir/?api=1&origin=43.1546,-4.6235&destination=43.4212,-4.7546&travelmode=driving&waypoints=43.1433,-4.8123" },
+      { label: "Potes tourism", url: "https://www.spain.info/en/destination/potes/" },
+      { label: "Fuente Dé cable car", url: "https://telefericodefuentede.com/" },
+      { label: "Fuente Dé tickets", url: "https://entradas.telefericofuentede.com/" },
+      { label: "Llanes tourism", url: "https://www.turismoasturias.es/en/descubre/donde-ir/municipios/llanes" },
+      { label: "Llanes motorhome area", url: "https://www.turismoasturias.es/en/organiza-tu-viaje/como-llegar-y-moverse/autocaravanas/area-llanes" }
+    ]
+  },
+  { // D10 — Cangas de Onís
+    html: `
+      <h4>Best plan — Sella kayak</h4>
+      <ul class="wtd-notes">
+        <li>Drive Llanes → Arriondas: <b>45–60m</b></li>
+        <li>Do a half-day or medium route — not the full tourist maximum</li>
+        <li>10:00–10:30 arrive Arriondas → 11:00 start kayak → 15:00–16:00 finish</li>
+        <li>Transfer back / shower, then drive to Cangas de Onís</li>
+      </ul>
+      <h4>If you don't kayak</h4>
+      <ul class="wtd-notes">
+        <li>Llanes beaches</li>
+        <li>Ribadesella old town and beach</li>
+        <li>Bufones de Pría if sea conditions are active</li>
+      </ul>
+      <h4>Overnight</h4>
+      <ul class="wtd-notes">
+        <li>Good RV option: <b>El Lleráu motorhome area, Cangas de Onís</b></li>
+      </ul>`,
+    links: [
+      { label: "Google Maps route", url: "https://www.google.com/maps/dir/?api=1&origin=43.4212,-4.7546&destination=43.35,-5.1294&travelmode=driving&waypoints=43.3899,-5.188|43.4614,-5.0595" },
+      { label: "Sella descent info", url: "https://www.spain.info/en/activities/descenso-sella/" },
+      { label: "El Lleráu motorhome area", url: "https://www.turismoasturias.es/en/organiza-tu-viaje/como-llegar-y-moverse/autocaravanas/area-del-llerau" }
+    ]
+  },
+  { // D11 — Covadonga
+    html: `
+      <h4>Important ⚠️</h4>
+      <ul class="wtd-notes">
+        <li>1 June is inside the restricted-access period — use the <b>shuttle/bus system</b>, do NOT drive the RV up</li>
+        <li>Bicycles are not affected by restrictions, but this is a serious climb — not a casual ride</li>
+      </ul>
+      <h4>Plan</h4>
+      <ul class="wtd-notes">
+        <li>Early start from Cangas</li>
+        <li>Park at designated parking / bus area</li>
+        <li>Shuttle to <b>Covadonga Lakes</b> — walk the lake loop (3–4h)</li>
+        <li>Visit <b>Covadonga Sanctuary</b> on the way down (45m–1h)</li>
+        <li>Total with buses: <b>5–6h</b></li>
+        <li>Return to Cangas</li>
+      </ul>`,
+    links: [
+      { label: "Google Maps route", url: "https://www.google.com/maps/dir/?api=1&origin=43.35,-5.1294&destination=43.35,-5.1294&travelmode=driving&waypoints=43.3093,-5.0557|43.2695,-4.9881" },
+      { label: "Covadonga Lakes access & shuttle", url: "https://www.turismoasturias.es/en/organiza-tu-viaje/como-llegar/acceso-a-lagos" },
+      { label: "El Lleráu motorhome area", url: "https://www.turismoasturias.es/en/organiza-tu-viaje/como-llegar-y-moverse/autocaravanas/area-del-llerau" }
+    ]
+  },
+  { // D12 — Ruta del Cares
+    html: `
+      <h4>Route</h4>
+      <ul class="wtd-notes">
+        <li>Cangas de Onís → Poncebos: <b>1h–1h15</b></li>
+      </ul>
+      <h4>Hiking plan</h4>
+      <ul class="wtd-notes">
+        <li>Do a <b>partial out-and-back from Poncebos</b> — not the full 22 km return</li>
+        <li>Start hike ~10:00 → walk 1.5–2h out → return same way → total 3–4h</li>
+        <li>Lunch / early dinner around Arenas de Cabrales</li>
+      </ul>
+      <h4>Food</h4>
+      <ul class="wtd-notes">
+        <li><b>Cabrales cheese</b></li>
+        <li>Mountain stew / meat</li>
+        <li>Simple cider house if back in Cangas</li>
+      </ul>
+      <h4>Avoid</h4>
+      <ul class="wtd-notes">
+        <li>Do not do the full 22 km unless you want a 7–8h hiking day and are happy to sacrifice the rest of the day</li>
+      </ul>`,
+    links: [
+      { label: "Google Maps route", url: "https://www.google.com/maps/dir/?api=1&origin=43.3037,-4.8169&destination=43.3037,-4.8169&travelmode=driving&waypoints=43.2576,-4.8305" },
+      { label: "Ruta del Cares info", url: "https://www.turismoasturias.es/de/senderismo/rutas/montaneros/ruta-del-cares" }
+    ]
+  },
+  { // D13 — Oviedo
+    html: `
+      <h4>Morning — Drive to Cudillero <span style="font-weight:400;color:#6b7280">(2–2.5h)</span></h4>
+      <ul class="wtd-notes"><li>Drive depends on where you slept</li></ul>
+      <h4>Cudillero <span style="font-weight:400;color:#6b7280">(2–3h visit)</span></h4>
+      <ul class="wtd-notes">
+        <li>Harbour and viewpoints</li>
+        <li>Steep lanes</li>
+        <li>Seafood lunch if timing works</li>
+      </ul>
+      <h4>Optional extras if weather is good</h4>
+      <ul class="wtd-notes">
+        <li><b>Playa del Silencio</b> viewpoint</li>
+        <li><b>Cabo Vidio</b> viewpoint</li>
+        <li>Don't overdo it — keep energy for Oviedo evening</li>
+      </ul>
+      <h4>Afternoon — Drive to Oviedo <span style="font-weight:400;color:#6b7280">(45m–1h)</span></h4>
+      <h4>Evening — Oviedo</h4>
+      <ul class="wtd-notes">
+        <li>Cathedral square and old town</li>
+        <li><b>Calle Gascona</b> — cider street</li>
+      </ul>
+      <h4>Food</h4>
+      <ul class="wtd-notes">
+        <li>Fabada asturiana</li>
+        <li>Cachopo</li>
+        <li>Asturian cheeses</li>
+        <li>Cider (poured the traditional way)</li>
+      </ul>
+      <h4>Overnight</h4>
+      <ul class="wtd-notes"><li><b>La Corredoria motorhome area, Oviedo</b></li></ul>`,
+    links: [
+      { label: "Google Maps route", url: "https://www.google.com/maps/dir/?api=1&origin=43.35,-5.1294&destination=43.3619,-5.8494&travelmode=driving&waypoints=43.562,-6.1467" },
+      { label: "Cudillero tourism", url: "https://www.turismoasturias.es/en/descubre/donde-ir/municipios/cudillero" },
+      { label: "Oviedo tourism highlights", url: "https://www.turismoasturias.es/en/-/blogs/las-10-mejores-cosas-que-ver-y-hacer-en-oviedo" },
+      { label: "La Corredoria motorhome area", url: "https://www.turismoasturias.es/en/organiza-tu-viaje/como-llegar-y-moverse/autocaravanas/area-la-corredoria" }
+    ]
+  },
+  { // D14 — Bordeaux / Landes
+    html: `
+      <h4>Route</h4>
+      <ul class="wtd-notes">
+        <li>Oviedo → Bilbao / San Sebastián → Bayonne → Bordeaux / Landes</li>
+      </ul>
+      <h4>Stops</h4>
+      <ul class="wtd-notes">
+        <li>Lunch around Bilbao, San Sebastián, or French Basque area</li>
+        <li>Short walk only — no real tourism</li>
+      </ul>
+      <h4>Overnight targets</h4>
+      <ul class="wtd-notes">
+        <li>Bordeaux outskirts</li>
+        <li>Arcachon / Landes</li>
+        <li>Bayonne only if tired and you want a shorter day</li>
+      </ul>
+      <h4>Recommendation</h4>
+      <ul class="wtd-notes">
+        <li>Push to <b>Bordeaux / Landes</b> if safe and comfortable — it makes Friday manageable</li>
+      </ul>`,
+    links: [{ label: "Google Maps route", url: "https://www.google.com/maps/dir/?api=1&origin=43.3619,-5.8494&destination=44.8378,-0.5792&travelmode=driving" }]
+  },
+  { // D15 — Eastern France
+    html: `
+      <h4>Good overnight targets</h4>
+      <ul class="wtd-notes">
+        <li><b>Beaune / Dijon</b></li>
+        <li><b>Besançon</b></li>
+        <li>Jura area</li>
+        <li><b>Mulhouse / Alsace</b> if you feel strong</li>
+      </ul>
+      <h4>Sightseeing</h4>
+      <ul class="wtd-notes"><li>Nothing mandatory — pure transit day</li></ul>
+      <h4>Food</h4>
+      <ul class="wtd-notes">
+        <li>If stopping in Burgundy: simple wine-region dinner</li>
+        <li>Early night</li>
+      </ul>`,
+    links: [{ label: "Google Maps route", url: "https://www.google.com/maps/dir/?api=1&origin=44.8378,-0.5792&destination=47.238,6.0244&travelmode=driving" }]
+  },
+  { // D16 — Zürich
+    html: `
+      <h4>Plan</h4>
+      <ul class="wtd-notes">
+        <li>Start at a normal hour</li>
+        <li>Avoid leaving the final drive too late</li>
+        <li>Aim to arrive Zürich in the <b>afternoon</b> if possible</li>
+      </ul>
+      <h4>Why this target is good</h4>
+      <ul class="wtd-notes">
+        <li>Sunday 7 June free</li>
+        <li>Monday 8 June free</li>
+        <li>Recovery before work on Tuesday 9 June</li>
+      </ul>`,
+    links: [{ label: "Google Maps route", url: "https://www.google.com/maps/dir/?api=1&origin=47.238,6.0244&destination=47.3769,8.5417&travelmode=driving" }]
+  }
+];
+
+function openWtdModal(idx, dayTitle) {
+  const plan = dayPlans[idx];
+  document.getElementById('wtd-title').textContent = dayTitle + ' — What to do';
+  document.getElementById('wtd-content').innerHTML = `
+    ${plan.html}
+    <h4>Useful links</h4>
+    <div class="wtd-links">${plan.links.map(l => `<a href="${l.url}" target="_blank" rel="noopener">${l.label}</a>`).join('')}</div>
+  `;
+  document.getElementById('wtd-overlay').classList.add('open');
+}
+
+function closeWtdModal(e) {
+  if (e && e.target !== document.getElementById('wtd-overlay') && !e.target.classList.contains('wtd-close')) return;
+  document.getElementById('wtd-overlay').classList.remove('open');
+}
+
+// ── Day filter ─────────────────────────────────────────────────────────────
+
+const selectedDays = new Set();
+
+function filterDay(idx, clickedBtn) {
+  const allBtn = document.querySelector('.all-btn');
+
+  if (idx === null) {
+    // "All days" — clear selection and show everything
+    selectedDays.clear();
+    document.querySelectorAll('.day-btn:not(.all-btn)').forEach(b => b.classList.remove('active'));
+    allBtn.classList.add('active');
+    daySections.forEach(s => s.style.display = '');
+    return;
+  }
+
+  // Toggle this day in the selection set
+  if (selectedDays.has(idx)) {
+    selectedDays.delete(idx);
+    clickedBtn.classList.remove('active');
+  } else {
+    selectedDays.add(idx);
+    clickedBtn.classList.add('active');
+  }
+
+  if (selectedDays.size === 0) {
+    // Nothing selected — revert to show all
+    allBtn.classList.add('active');
+    daySections.forEach(s => s.style.display = '');
+  } else {
+    // Deactivate "All days" pill
+    allBtn.classList.remove('active');
+    // Show only selected days
+    daySections.forEach((s, i) => {
+      s.style.display = selectedDays.has(i) ? '' : 'none';
+    });
+    // Scroll to the first selected day
+    const firstIdx = Math.min(...selectedDays);
+    const bar = document.getElementById('day-picker-bar');
+    const top = daySections[firstIdx].getBoundingClientRect().top + window.scrollY - bar.offsetHeight - 12;
+    window.scrollTo({ top, behavior: 'smooth' });
+  }
+}
+</script>
+<!-- What to do modal -->
+<div id="wtd-overlay" class="wtd-overlay" onclick="closeWtdModal(event)">
+  <div class="wtd-box" onclick="event.stopPropagation()">
+    <button class="wtd-close" onclick="closeWtdModal()">&#x2715;</button>
+    <h3 id="wtd-title"></h3>
+    <div id="wtd-content"></div>
+  </div>
+</div>
+
+<!-- What to see modal -->
+<div id="photo-overlay" class="photo-overlay" onclick="closePhotoModal(event)">
+  <div class="photo-box" onclick="event.stopPropagation()">
+    <button class="photo-close" onclick="closePhotoModal()">&#x2715;</button>
+    <h3 id="photo-modal-title"></h3>
+    <div id="photo-modal-content"></div>
+  </div>
+</div>
+</body>
+</html>
