@@ -1,4 +1,6 @@
-[
+// Edit this file to update the summary table on the website.
+// Each entry has: date, route, drive, sleep, and optionally "campsite": true
+window.summaryData = [
   {
     "date": "Day 1\nFri 22 May",
     "route": "Osnabrück → Troyes / Reims area",
@@ -97,4 +99,4 @@
     "drive": "3.5–5h depending overnight point",
     "sleep": "Home / Zürich"
   }
-]
+];
