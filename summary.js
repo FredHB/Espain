@@ -43,19 +43,20 @@ window.summaryData = [
     "date": "Day 7\nThu 28 May",
     "route": "Work morning in Bilbao → direct drive to Santillana",
     "drive": "~1.5h after work",
-    "sleep": "Santillana / Comillas / Cóbreces area"
+    "sleep": "Santillana / Comillas / Cóbreces area",
+    "campsite": true
   },
   {
     "date": "Day 8\nFri 29 May",
-    "route": "Santillana → Altamira → Comillas → El Soplao → Potes",
-    "drive": "2.5–3h total",
-    "sleep": "Potes / Camping La Viorna recommended"
+    "route": "Santillana → Altamira → Comillas → San Vicente de la Barquera",
+    "drive": "2–2.5h total",
+    "sleep": "San Vicente de la Barquera"
   },
   {
     "date": "Day 9\nSat 30 May",
-    "route": "Potes → Fuente Dé → Llanes / Ribadesella",
-    "drive": "2.5–3h total",
-    "sleep": "Llanes or Ribadesella area"
+    "route": "San Vicente de la Barquera → Llanes",
+    "drive": "1–1.5h along the coast",
+    "sleep": "Llanes"
   },
   {
     "date": "Day 10\nSun 31 May",
