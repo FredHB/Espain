@@ -36,13 +36,13 @@ window.summaryData = [
   {
     "date": "Day 6\nWed 27 May",
     "route": "Full Bilbao day",
-    "drive": "0–30m, park once",
-    "sleep": "Bilbao / Kobetamendi area"
+    "drive": "30min into Bilbao",
+    "sleep": "Bilbao"
   },
   {
     "date": "Day 7\nThu 28 May",
-    "route": "Work morning in Bilbao → afternoon drive to Santander / Santillana",
-    "drive": "1.5–2h after work",
+    "route": "Work morning in Bilbao → direct drive to Santillana",
+    "drive": "~1.5h after work",
     "sleep": "Santillana / Comillas / Cóbreces area"
   },
   {
