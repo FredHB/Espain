@@ -35,14 +35,14 @@ window.summaryData = [
   },
   {
     "date": "Day 6\nWed 27 May",
-    "route": "Bilbao visit → Santander work base",
-    "drive": "1.5–2h Bilbao to Santander",
-    "sleep": "Santander / Camping Cabo Mayor recommended"
+    "route": "Full Bilbao day",
+    "drive": "0–30m, park once",
+    "sleep": "Bilbao / Kobetamendi area"
   },
   {
     "date": "Day 7\nThu 28 May",
-    "route": "Work morning in Santander → Santander visit → Santillana/Comillas area",
-    "drive": "45m–1h after work",
+    "route": "Work morning in Bilbao → afternoon drive to Santander / Santillana",
+    "drive": "1.5–2h after work",
     "sleep": "Santillana / Comillas / Cóbreces area"
   },
   {
@@ -77,8 +77,8 @@ window.summaryData = [
   },
   {
     "date": "Day 13\nWed 3 Jun",
-    "route": "Cangas / Arenas → Cudillero → Oviedo",
-    "drive": "2.5–3h total",
+    "route": "Cangas / Arenas → Oviedo direct",
+    "drive": "1.5–2h",
     "sleep": "Oviedo"
   },
   {
