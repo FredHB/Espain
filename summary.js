@@ -31,13 +31,13 @@ window.summaryData = [
     "date": "Day 5\nTue 26 May",
     "route": "San Sebastián → Zarautz → Getaria → Zumaia → Lekeitio/Gaztelugatxe → Bilbao",
     "drive": "3–4h total if you choose Lekeitio; similar if choosing Gaztelugatxe",
-    "sleep": "Bilbao / Kobetamendi area"
+    "sleep": "Bilbao / Kobetamendi area · overnight east of Bilbao"
   },
   {
     "date": "Day 6\nWed 27 May",
     "route": "Bilbao visit → Santander work base",
     "drive": "1.5–2h Bilbao to Santander",
-    "sleep": "Santander / Camping Cabo Mayor · overnight east of Bilbao"
+    "sleep": "Santander / Camping Cabo Mayor recommended"
   },
   {
     "date": "Day 7\nThu 28 May",
