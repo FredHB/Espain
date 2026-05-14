@@ -37,7 +37,7 @@ window.summaryData = [
     "date": "Day 6\nWed 27 May",
     "route": "Bilbao visit → Santander work base",
     "drive": "1.5–2h Bilbao to Santander",
-    "sleep": "Santander / Camping Cabo Mayor recommended"
+    "sleep": "Santander / Camping Cabo Mayor · overnight east of Bilbao"
   },
   {
     "date": "Day 7\nThu 28 May",
