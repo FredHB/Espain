@@ -161,7 +161,7 @@
 
     <h3>Bedding &amp; towels</h3>
     <ul>
-      <li><input type="checkbox" data-key="rv-1"><span>Fitted sheet + duvet or sleeping bag liner</span></li>
+      <li><input type="checkbox" data-key="rv-1"><span>Fitted sheet + duvet</span></li>
       <li><input type="checkbox" data-key="rv-2"><span>Pillows × 2</span></li>
       <li><input type="checkbox" data-key="rv-3"><span>Quick-dry towels × 2</span></li>
       <li><input type="checkbox" data-key="rv-4"><span>Beach towels × 2</span></li>
@@ -169,36 +169,35 @@
 
     <h3>Kitchen</h3>
     <ul>
-      <li><input type="checkbox" data-key="rv-5"><span>Moka pot or Aeropress + coffee / tea</span></li>
-      <li><input type="checkbox" data-key="rv-6"><span>Spice kit + olive oil (small decant bottle)</span></li>
-      <li><input type="checkbox" data-key="rv-7"><span>Washing-up liquid (full bottle)</span></li>
-      <li><input type="checkbox" data-key="rv-8"><span>Sponge + J-cloths</span></li>
-      <li><input type="checkbox" data-key="rv-9"><span>Reusable bags + zip-locks (various sizes)</span></li>
-      <li><input type="checkbox" data-key="rv-10"><span>Water filter bottle</span></li>
+      <li><input type="checkbox" data-key="rv-5"><span>Kettle, coffee filters, beans, tea bags</span></li>
+      <li><input type="checkbox" data-key="rv-6"><span>Spice kit + olive oil</span></li>
+      <li><input type="checkbox" data-key="rv-7"><span>Washing-up liquid</span></li>
+      <li><input type="checkbox" data-key="rv-8"><span>Sponge + cloths + tea towel</span></li>
+      <li><input type="checkbox" data-key="rv-9" data-default="1"><span>Pots, pan, dishes, cutlery</span></li>
+      <li><input type="checkbox" data-key="rv-10"><span>Reusable bags + zip-locks (various sizes)</span></li>
     </ul>
 
     <h3>Cleaning &amp; laundry</h3>
     <ul>
-      <li><input type="checkbox" data-key="rv-11"><span>Dustpan + small brush</span></li>
-      <li><input type="checkbox" data-key="rv-12"><span>All-purpose spray</span></li>
+      <li><input type="checkbox" data-key="rv-11" data-default="1"><span>Dustpan + small brush</span></li>
+      <li><input type="checkbox" data-key="rv-12"><span>Vinegar cleaner</span></li>
       <li><input type="checkbox" data-key="rv-13"><span>Bin bags</span></li>
-      <li><input type="checkbox" data-key="rv-14"><span>Collapsible washing line + pegs</span></li>
+      <li><input type="checkbox" data-key="rv-14"><span>Sponge + cloths</span></li>
+      <li><input type="checkbox" data-key="rv-15"><span>Collapsible washing line + pegs</span></li>
     </ul>
 
     <h3>RV-specific</h3>
     <ul>
-      <li><input type="checkbox" data-key="rv-15"><span>Mains hook-up cable (CEE Mennekes) + EU adapters</span></li>
-      <li><input type="checkbox" data-key="rv-16"><span>Levelling wedges</span></li>
-      <li><input type="checkbox" data-key="rv-17"><span>Fresh water jerry can</span></li>
-      <li><input type="checkbox" data-key="rv-18"><span>Grey water container (if no onboard tank)</span></li>
-      <li><input type="checkbox" data-key="rv-19"><span>Toilet chemicals / cassette bags</span></li>
-      <li><input type="checkbox" data-key="rv-20"><span>Insect screen for cab windows</span></li>
+      <li><input type="checkbox" data-key="rv-16" data-default="1"><span>Mains hook-up cable</span></li>
+      <li><input type="checkbox" data-key="rv-17" data-default="1"><span>Levelling wedges</span></li>
+      <li><input type="checkbox" data-key="rv-18"><span>Fresh water jerry can</span></li>
+      <li><input type="checkbox" data-key="rv-19" data-default="1"><span>Toilet chemicals</span></li>
     </ul>
 
     <h3>Leisure</h3>
     <ul>
-      <li><input type="checkbox" data-key="rv-21"><span>Card game or travel board game</span></li>
-      <li><input type="checkbox" data-key="rv-22"><span>Books / e-readers</span></li>
+      <li><input type="checkbox" data-key="rv-20"><span>Card game or travel board game</span></li>
+      <li><input type="checkbox" data-key="rv-21"><span>Books / e-readers</span></li>
     </ul>
   </section>
 
@@ -224,19 +223,23 @@ function updateProgress() {
 
 function resetAll() {
   if (!confirm('Clear all checked items?')) return;
-  saveState({});
+  const fresh = {};
   document.querySelectorAll('input[type="checkbox"]').forEach(b => {
-    b.checked = false;
-    b.closest('li').classList.remove('checked');
+    const on = b.dataset.default === '1';
+    fresh[b.dataset.key] = on ? 1 : 0;
+    b.checked = on;
+    b.closest('li').classList.toggle('checked', on);
   });
+  saveState(fresh);
   updateProgress();
 }
 
-// Init
+// Init — apply stored state, falling back to data-default for unseen keys
 const state = getState();
 document.querySelectorAll('input[type="checkbox"]').forEach(box => {
   const key = box.dataset.key;
-  if (state[key]) {
+  const checked = key in state ? !!state[key] : box.dataset.default === '1';
+  if (checked) {
     box.checked = true;
     box.closest('li').classList.add('checked');
   }
