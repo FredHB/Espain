@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Packing List — Espain Trip</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin: 0; color: #202124; background: linear-gradient(160deg, #1a1030 0%, #112240 20%, #1a4a6e 42%, #3d1a0e 62%, #4a1535 80%, #1b2d4a 100%); min-height: 100vh; }
+    header { padding: 32px 28px; background: #0d1f3c; color: white; text-align: center; }
+    header h1 { margin: 0 0 8px; font-size: 32px; font-weight: 800; background: linear-gradient(100deg, #5bc4f5 0%, #a78bfa 30%, #f97316 58%, #c026d3 80%, #38bdf8 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; letter-spacing: -0.01em; }
+    header p { margin: 3px 0; opacity: .85; }
+    header nav { margin-top: 14px; }
+    header nav a { display: inline-block; padding: 7px 14px; border-radius: 9px; background: #1e3a5f; color: #93c5fd; text-decoration: none; font-size: 13px; font-weight: 600; border: 1px solid #2d5a8e; }
+    header nav a:hover { background: #2d5a8e; }
+    main { max-width: 860px; margin: 0 auto; padding: 22px; }
+    section { background: white; border: 1px solid #e5e7eb; border-radius: 14px; padding: 18px 22px; margin-bottom: 18px; box-shadow: 0 1px 3px rgba(0,0,0,.05); }
+    h2 { margin: 0 0 14px; font-size: 18px; font-weight: 700; color: #111827; display: flex; align-items: center; gap: 8px; }
+    h3 { margin: 18px 0 8px; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: #6b7280; border-bottom: 1px solid #f3f4f6; padding-bottom: 4px; }
+    h3:first-of-type { margin-top: 4px; }
+    ul { list-style: none; margin: 0; padding: 0; }
+    li { display: flex; align-items: flex-start; gap: 10px; padding: 5px 0; border-bottom: 1px solid #f9fafb; font-size: 14px; line-height: 1.5; }
+    li:last-child { border-bottom: none; }
+    li.checked { color: #9ca3af; text-decoration: line-through; }
+    input[type="checkbox"] { flex-shrink: 0; margin-top: 3px; width: 16px; height: 16px; accent-color: #2563eb; cursor: pointer; }
+    .per-person { font-size: 11px; font-weight: 600; color: #6b7280; background: #f3f4f6; border-radius: 4px; padding: 1px 5px; white-space: nowrap; margin-top: 2px; }
+    .progress-bar-wrap { background: #f3f4f6; border-radius: 99px; height: 8px; margin: 0 0 6px; overflow: hidden; }
+    .progress-bar { height: 8px; background: linear-gradient(90deg, #2563eb, #7c3aed); border-radius: 99px; transition: width .3s; }
+    .progress-label { font-size: 12px; color: #6b7280; margin-bottom: 14px; }
+    .reset-btn { float: right; background: none; border: 1px solid #e5e7eb; border-radius: 7px; padding: 4px 10px; font-size: 12px; color: #6b7280; cursor: pointer; margin-top: -2px; }
+    .reset-btn:hover { background: #f3f4f6; }
+    @media (max-width: 640px) {
+      header { padding: 16px; }
+      header h1 { font-size: 22px; }
+      main { padding: 12px; }
+      section { padding: 14px 16px; border-radius: 10px; }
+    }
+  </style>
+</head>
+<body>
+<header>
+  <h1>Packing List</h1>
+  <p>16-day North Spain RV trip · Hymer · couple</p>
+  <nav><a href="index.html">← Back to trip planner</a></nav>
+</header>
+<main>
+
+  <section id="progress-section">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+      <span style="font-weight:700;font-size:15px;">Overall progress</span>
+      <button class="reset-btn" onclick="resetAll()">Reset all</button>
+    </div>
+    <div class="progress-bar-wrap"><div class="progress-bar" id="progress-bar" style="width:0%"></div></div>
+    <div class="progress-label" id="progress-label">0 of 0 items packed</div>
+  </section>
+
+  <section>
+    <h2>👕 Clothing <span style="font-size:13px;color:#6b7280;font-weight:400">per person · pack for 8 days, laundry twice</span></h2>
+    <ul>
+      <li><input type="checkbox" data-key="cl-1"><span>Rain jacket — hard or softshell</span></li>
+      <li><input type="checkbox" data-key="cl-2"><span>Fleece or mid-layer</span></li>
+      <li><input type="checkbox" data-key="cl-3"><span>T-shirts × 5</span></li>
+      <li><input type="checkbox" data-key="cl-4"><span>Long-sleeve shirts × 3</span></li>
+      <li><input type="checkbox" data-key="cl-5"><span>Trousers × 1 (smart enough for pintxos evenings)</span></li>
+      <li><input type="checkbox" data-key="cl-6"><span>Jeans or chinos × 1</span></li>
+      <li><input type="checkbox" data-key="cl-7"><span>Shorts × 3</span></li>
+      <li><input type="checkbox" data-key="cl-8"><span>Swimwear × 2</span></li>
+      <li><input type="checkbox" data-key="cl-9"><span>Underwear × 10</span></li>
+      <li><input type="checkbox" data-key="cl-10"><span>Socks × 10</span></li>
+      <li><input type="checkbox" data-key="cl-11"><span>Hiking socks × 4</span></li>
+      <li><input type="checkbox" data-key="cl-12"><span>Warm hat + thin gloves (Covadonga Lakes ~1100m)</span></li>
+      <li><input type="checkbox" data-key="cl-13"><span>Sun hat</span></li>
+      <li><input type="checkbox" data-key="cl-14"><span>Sunglasses</span></li>
+      <li><input type="checkbox" data-key="cl-15"><span>Compact umbrella</span></li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>👟 Footwear <span style="font-size:13px;color:#6b7280;font-weight:400">per person</span></h2>
+    <ul>
+      <li><input type="checkbox" data-key="fw-1"><span>Waterproof hiking boots (mandatory — Ruta del Cares)</span></li>
+      <li><input type="checkbox" data-key="fw-2"><span>Trainers / casual shoes</span></li>
+      <li><input type="checkbox" data-key="fw-3"><span>Flip flops or sandals</span></li>
+      <li><input type="checkbox" data-key="fw-4"><span>Water shoes or old trainers (Sella kayak)</span></li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>🥾 Outdoors &amp; activities</h2>
+    <ul>
+      <li><input type="checkbox" data-key="oa-1"><span>Daypack 20–25L × 2</span></li>
+      <li><input type="checkbox" data-key="oa-2"><span>Trekking poles (optional)</span></li>
+      <li><input type="checkbox" data-key="oa-3"><span>Water bottles × 2 per person</span></li>
+      <li><input type="checkbox" data-key="oa-4"><span>Dry bag (kayaking — phone + wallet)</span></li>
+      <li><input type="checkbox" data-key="oa-5"><span>Trail snacks</span></li>
+      <li><input type="checkbox" data-key="oa-6"><span>Mesh laundry bag</span></li>
+      <li><input type="checkbox" data-key="oa-7"><span>Detergent pods × 20</span></li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>💻 Work</h2>
+    <ul>
+      <li><input type="checkbox" data-key="wk-1"><span>Laptop + charger</span></li>
+      <li><input type="checkbox" data-key="wk-2"><span>USB-C hub / dongle</span></li>
+      <li><input type="checkbox" data-key="wk-3"><span>Portable hotspot or local SIM</span></li>
+      <li><input type="checkbox" data-key="wk-4"><span>Noise-cancelling headphones</span></li>
+      <li><input type="checkbox" data-key="wk-5"><span>Lap desk / tray</span></li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>💊 Health &amp; personal <span style="font-size:13px;color:#6b7280;font-weight:400">per person</span></h2>
+    <ul>
+      <li><input type="checkbox" data-key="hp-1"><span>Contact lenses × 16+ days + extra pairs</span></li>
+      <li><input type="checkbox" data-key="hp-2"><span>Lens case + solution (full bottle)</span></li>
+      <li><input type="checkbox" data-key="hp-3"><span>Glasses (backup)</span></li>
+      <li><input type="checkbox" data-key="hp-4"><span>SPF 30+ sunscreen × 2 bottles</span></li>
+      <li><input type="checkbox" data-key="hp-5"><span>Insect repellent</span></li>
+      <li><input type="checkbox" data-key="hp-6"><span>Lip balm with SPF</span></li>
+      <li><input type="checkbox" data-key="hp-7"><span>Deodorant × 2</span></li>
+      <li><input type="checkbox" data-key="hp-8"><span>Shampoo, conditioner, shower gel (full size)</span></li>
+      <li><input type="checkbox" data-key="hp-9"><span>Toothbrush + toothpaste × 2 tubes</span></li>
+      <li><input type="checkbox" data-key="hp-10"><span>Razor + blades (16 days)</span></li>
+      <li><input type="checkbox" data-key="hp-11"><span>Personal medications × 16 days + spare</span></li>
+      <li><input type="checkbox" data-key="hp-12"><span>Blister plasters (double pack)</span></li>
+      <li><input type="checkbox" data-key="hp-13"><span>Plasters assorted</span></li>
+      <li><input type="checkbox" data-key="hp-14"><span>Ibuprofen + paracetamol (full boxes)</span></li>
+      <li><input type="checkbox" data-key="hp-15"><span>Antihistamine × 16 days</span></li>
+      <li><input type="checkbox" data-key="hp-16"><span>Rehydration sachets × 8</span></li>
+      <li><input type="checkbox" data-key="hp-17"><span>Aloe vera gel</span></li>
+      <li><input type="checkbox" data-key="hp-18"><span>Hand sanitiser</span></li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>📄 Documents &amp; admin</h2>
+    <ul>
+      <li><input type="checkbox" data-key="doc-1"><span>Passports</span></li>
+      <li><input type="checkbox" data-key="doc-2"><span>EU driving licences</span></li>
+      <li><input type="checkbox" data-key="doc-3"><span>Vehicle registration + green card insurance</span></li>
+      <li><input type="checkbox" data-key="doc-4"><span>EHIC / GHIC cards (both)</span></li>
+      <li><input type="checkbox" data-key="doc-5"><span>Breakdown cover documents</span></li>
+      <li><input type="checkbox" data-key="doc-6"><span>Swiss motorway vignette (return leg)</span></li>
+      <li><input type="checkbox" data-key="doc-7"><span>Travel insurance printout (multi-day touring policy)</span></li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>🔌 Electronics</h2>
+    <ul>
+      <li><input type="checkbox" data-key="el-1"><span>Phone chargers × 2</span></li>
+      <li><input type="checkbox" data-key="el-2"><span>Power bank</span></li>
+      <li><input type="checkbox" data-key="el-3"><span>Camera + memory cards</span></li>
+      <li><input type="checkbox" data-key="el-4"><span>12V / USB car charger</span></li>
+      <li><input type="checkbox" data-key="el-5"><span>EU plug adapters</span></li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>🚐 RV equipment</h2>
+
+    <h3>Bedding &amp; towels</h3>
+    <ul>
+      <li><input type="checkbox" data-key="rv-1"><span>Fitted sheet + duvet or sleeping bag liner</span></li>
+      <li><input type="checkbox" data-key="rv-2"><span>Pillows × 2</span></li>
+      <li><input type="checkbox" data-key="rv-3"><span>Quick-dry towels × 2</span></li>
+      <li><input type="checkbox" data-key="rv-4"><span>Beach towels × 2</span></li>
+    </ul>
+
+    <h3>Kitchen</h3>
+    <ul>
+      <li><input type="checkbox" data-key="rv-5"><span>Moka pot or Aeropress + coffee / tea</span></li>
+      <li><input type="checkbox" data-key="rv-6"><span>Spice kit + olive oil (small decant bottle)</span></li>
+      <li><input type="checkbox" data-key="rv-7"><span>Washing-up liquid (full bottle)</span></li>
+      <li><input type="checkbox" data-key="rv-8"><span>Sponge + J-cloths</span></li>
+      <li><input type="checkbox" data-key="rv-9"><span>Reusable bags + zip-locks (various sizes)</span></li>
+      <li><input type="checkbox" data-key="rv-10"><span>Water filter bottle</span></li>
+    </ul>
+
+    <h3>Cleaning &amp; laundry</h3>
+    <ul>
+      <li><input type="checkbox" data-key="rv-11"><span>Dustpan + small brush</span></li>
+      <li><input type="checkbox" data-key="rv-12"><span>All-purpose spray</span></li>
+      <li><input type="checkbox" data-key="rv-13"><span>Bin bags</span></li>
+      <li><input type="checkbox" data-key="rv-14"><span>Collapsible washing line + pegs</span></li>
+    </ul>
+
+    <h3>RV-specific</h3>
+    <ul>
+      <li><input type="checkbox" data-key="rv-15"><span>Mains hook-up cable (CEE Mennekes) + EU adapters</span></li>
+      <li><input type="checkbox" data-key="rv-16"><span>Levelling wedges</span></li>
+      <li><input type="checkbox" data-key="rv-17"><span>Fresh water jerry can</span></li>
+      <li><input type="checkbox" data-key="rv-18"><span>Grey water container (if no onboard tank)</span></li>
+      <li><input type="checkbox" data-key="rv-19"><span>Toilet chemicals / cassette bags</span></li>
+      <li><input type="checkbox" data-key="rv-20"><span>Insect screen for cab windows</span></li>
+    </ul>
+
+    <h3>Leisure</h3>
+    <ul>
+      <li><input type="checkbox" data-key="rv-21"><span>Card game or travel board game</span></li>
+      <li><input type="checkbox" data-key="rv-22"><span>Books / e-readers</span></li>
+    </ul>
+  </section>
+
+</main>
+
+<script>
+const STORE = 'espain-packing-v1';
+
+function getState() {
+  try { return JSON.parse(localStorage.getItem(STORE) || '{}'); } catch { return {}; }
+}
+function saveState(state) {
+  localStorage.setItem(STORE, JSON.stringify(state));
+}
+
+function updateProgress() {
+  const boxes = document.querySelectorAll('input[type="checkbox"]');
+  const total = boxes.length;
+  const done = [...boxes].filter(b => b.checked).length;
+  document.getElementById('progress-bar').style.width = (total ? (done / total * 100) : 0) + '%';
+  document.getElementById('progress-label').textContent = `${done} of ${total} items packed`;
+}
+
+function resetAll() {
+  if (!confirm('Clear all checked items?')) return;
+  saveState({});
+  document.querySelectorAll('input[type="checkbox"]').forEach(b => {
+    b.checked = false;
+    b.closest('li').classList.remove('checked');
+  });
+  updateProgress();
+}
+
+// Init
+const state = getState();
+document.querySelectorAll('input[type="checkbox"]').forEach(box => {
+  const key = box.dataset.key;
+  if (state[key]) {
+    box.checked = true;
+    box.closest('li').classList.add('checked');
+  }
+  box.addEventListener('change', () => {
+    const s = getState();
+    if (box.checked) { s[key] = 1; box.closest('li').classList.add('checked'); }
+    else { delete s[key]; box.closest('li').classList.remove('checked'); }
+    saveState(s);
+    updateProgress();
+  });
+});
+updateProgress();
+</script>
+</body>
+</html>
