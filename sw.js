@@ -1,7 +1,7 @@
 // Service worker for Espain trip planner
 // Caches core assets so the page works offline (requires HTTPS or localhost — works on GitHub Pages)
 
-const CACHE = 'espain-v1.5';
+const CACHE = 'espain-v1.6';
 
 const PRECACHE = [
   './',
