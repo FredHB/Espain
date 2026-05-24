@@ -51,8 +51,8 @@ window.summaryData = [
   },
   {
     "date": "Day 7\nThu 28 May",
-    "route": "Work morning in Bilbao → direct drive to Santillana",
-    "drive": "<span class='dtime'>01:45</span> · after work",
+    "route": "Full remote work day in Bilbao → evening drive to Santillana",
+    "drive": "<span class='dtime'>01:45</span> · evening, after work",
     "sleep": "Santillana / Comillas / Cóbreces area",
     "campsite": true,
     "tags": ["culture"]

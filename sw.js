@@ -1,11 +1,12 @@
 // Service worker for Espain trip planner
 // Caches core assets so the page works offline (requires HTTPS or localhost — works on GitHub Pages)
 
-const CACHE = 'espain-v1.1';
+const CACHE = 'espain-v1.6';
 
 const PRECACHE = [
   './',
   './index.html',
+  './packing.html',
   './summary.js',
   'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css',
   'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js',
