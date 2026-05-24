@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//Users/fred/git/trip_spain/Espain/**)",
+      "Read(//Users/fred/git/trip_spain/**)",
+      "mcp__Claude_Preview__preview_start"
+    ]
+  }
+}

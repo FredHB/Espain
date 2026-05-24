@@ -7,25 +7,25 @@
 window.summaryData = [
   {
     "date": "Day 1\nFri 22 May",
-    "route": "Osnabrück — packing day, no departure",
-    "drive": "—",
-    "sleep": "Osnabrück",
+    "route": "Osnabrück → Troyes / Reims area",
+    "drive": "<span class='dtime'>08:30–09:30</span> · depart after 14:00",
+    "sleep": "Troyes area, with Reims as earlier fallback",
     "transfer": true
   },
   {
     "date": "Day 2\nSat 23 May",
-    "route": "Osnabrück → Blois",
-    "drive": "<span class='dtime'>08:30–09:30</span> · full transit day",
-    "sleep": "Blois area",
+    "route": "Troyes / Reims → Landes / Bayonne area",
+    "drive": "<span class='dtime'>09:45–10:30</span> · longest driving day",
+    "sleep": "Bayonne, Capbreton, Biarritz or Landes coast area",
     "transfer": true
   },
   {
     "date": "Day 3\nSun 24 May",
-    "route": "Blois → Biarritz → San Sebastián — all caught up!",
-    "drive": "<span class='dtime'>09:30–10:30</span> · long combined transit day",
-    "sleep": "San Sebastián",
+    "route": "Bayonne → Saint-Jean-de-Luz → Hondarribia → San Sebastián",
+    "drive": "<span class='dtime'>02:30</span> · broken into short hops",
+    "sleep": "Near San Sebastián",
     "campsite": true,
-    "transfer": true
+    "tags": ["culture", "culinary", "beach"]
   },
   {
     "date": "Day 4\nMon 25 May",
@@ -51,8 +51,8 @@ window.summaryData = [
   },
   {
     "date": "Day 7\nThu 28 May",
-    "route": "Work morning in Bilbao → direct drive to Santillana",
-    "drive": "<span class='dtime'>01:45</span> · after work",
+    "route": "Full remote work day in Bilbao → evening drive to Santillana",
+    "drive": "<span class='dtime'>01:45</span> · evening, after work",
     "sleep": "Santillana / Comillas / Cóbreces area",
     "campsite": true,
     "tags": ["culture"]
